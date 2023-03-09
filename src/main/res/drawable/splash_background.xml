@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Background color -->
+    <item android:drawable="@color/ic_launcher_background"/>
+
+    <!-- Text -->
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:text="Your Text Here"
+            android:textColor="@color/white"
+            android:textSize="48sp"/>
+    </item>
+</layer-list>
