@@ -9,10 +9,16 @@ import com.applid.musicbox.R
 object Assets {
 
     val placeholderId = getRandomPlaceHolder()
+    const val listPlaceholderId = R.drawable.list_placeholder;
 
     fun getPlaceholderUri(context: Context): Uri {
         return buildUriOfResource(context.resources, placeholderId)
     }
+
+    fun getListPlaceholderUri(context: Context): Uri {
+        return buildUriOfResource(context.resources, listPlaceholderId)
+    }
+
 
 
 
@@ -28,9 +34,7 @@ object Assets {
 }
 
 fun getRandomPlaceHolder(): Int {
-    val randomNumbe  = listOf(1, 2, 3, 4, 5, 6).shuffled().first()
-    println("Random is " + randomNumbe)
-    return when(randomNumbe) {
+    return when(listOf(1, 2, 3, 4, 5, 6).shuffled().first()) {
         2 -> R.raw.placeholder_2
         3 -> R.raw.placeholder_3
         4 -> R.raw.placeholder_4

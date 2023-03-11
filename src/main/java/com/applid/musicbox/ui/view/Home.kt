@@ -117,8 +117,6 @@ fun HomeView(context: ViewContext) {
 
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
                 mInterstitialAd = interstitialAd
-
-
             }
         })
 

@@ -59,7 +59,7 @@ fun SongCard(
                 leading()
                 Box {
                     AsyncImage(
-                        song.createArtworkImageRequest(context.symphony).build(),
+                        song.createArtworkImageRequest(context.symphony, true).build(),
                         null,
                         modifier = Modifier
                             .size(45.dp)

@@ -30,7 +30,7 @@ enum class PrimaryThemeColors {
 }
 
 object ThemeColors {
-    val SymphonyBlue = Color(0xFF545DFF)
+    val SymphonyBlue = Color(0xFFfd4036)
     val Red = Color(0xFFEF4444)
     val Orange = Color(0xFFF97316)
     val Amber = Color(0xFFF59E0B)

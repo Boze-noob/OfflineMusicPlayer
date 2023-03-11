@@ -117,8 +117,8 @@ data class Song(
     val filename = Path(path).fileName.toString()
     val uri: Uri get() = buildUri(id)
 
-    fun createArtworkImageRequest(symphony: Symphony) =
-        symphony.groove.album.createAlbumArtworkImageRequest(albumId)
+    fun createArtworkImageRequest(symphony: Symphony, isList : Boolean = false) =
+        symphony.groove.album.createAlbumArtworkImageRequest(albumId, isList)
 
     companion object {
         fun buildUri(id: Long): Uri =

@@ -72,10 +72,10 @@ class AlbumRepository(private val symphony: Symphony) {
         albumId
     )
 
-    fun createAlbumArtworkImageRequest(albumId: Long) = createHandyImageRequest(
+    fun createAlbumArtworkImageRequest(albumId: Long, isList: Boolean = false) = createHandyImageRequest(
         symphony.applicationContext,
         image = getAlbumArtworkUri(albumId),
-        fallback = Assets.placeholderId,
+        fallback = if(isList) Assets.listPlaceholderId else Assets.placeholderId
     )
 
     fun getAll() = cached.values.toList()
