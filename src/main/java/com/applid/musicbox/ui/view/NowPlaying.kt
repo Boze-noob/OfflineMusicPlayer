@@ -194,6 +194,8 @@ fun NowPlayingLandscapeAppBar(context: ViewContext) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun NowPlayingBody(context: ViewContext, data: PlayerStateData) {
+    var isEqualizer by remember { mutableStateOf(false) }
+
     data.run {
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             val orientation = ScreenOrientation.fromConstraints(this@BoxWithConstraints)
@@ -203,65 +205,74 @@ private fun NowPlayingBody(context: ViewContext, data: PlayerStateData) {
                     if (orientation.isPortrait) {
                         NowPlayingAppBar(context)
                     }
-                },
-                content = { contentPadding ->
-                    BoxWithConstraints(modifier = Modifier.padding(contentPadding)) {
-                        when (orientation) {
-                            ScreenOrientation.PORTRAIT -> Column(modifier = Modifier.fillMaxSize()) {
-                                Box(modifier = Modifier.weight(1f))
-                                NowPlayingBodyCover(context, data)
-                                Box(modifier = Modifier.weight(1f))
-                                Column {
-                                    NowPlayingBodyContent(context, data)
-                                    NowPlayingBodyBottomBar(context, data)
+                }
+            ) { contentPadding ->
+                BoxWithConstraints(modifier = Modifier.padding(contentPadding)) {
+                    when (orientation) {
+                        ScreenOrientation.PORTRAIT -> Column(modifier = Modifier.fillMaxSize()) {
+                            Box(modifier = Modifier.weight(1f))
+                            NowPlayingBodyCover(context, data, isEqualizer)
+                            Box(modifier = Modifier.weight(1f))
+                            Column {
+                                NowPlayingBodyContent(context, data, isEqualizer) {
+                                    isEqualizer = it
                                 }
+                                NowPlayingBodyBottomBar(context, data)
                             }
-                            ScreenOrientation.LANDSCAPE -> Row(modifier = Modifier.fillMaxSize()) {
-                                Box(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .padding(0.dp, 12.dp)
-                                ) {
-                                    NowPlayingBodyCover(context, data)
-                                }
-                                Box(modifier = Modifier.weight(1f)) {
-                                    Column {
-                                        NowPlayingLandscapeAppBar(context)
-                                        Box(modifier = Modifier.weight(1f))
-                                        NowPlayingBodyContent(context, data)
-                                        NowPlayingBodyBottomBar(context, data)
+                        }
+                        ScreenOrientation.LANDSCAPE -> Row(modifier = Modifier.fillMaxSize()) {
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(0.dp, 12.dp)
+                            ) {
+                                NowPlayingBodyCover(context, data, isEqualizer)
+                            }
+                            Box(modifier = Modifier.weight(1f)) {
+                                Column {
+                                    NowPlayingLandscapeAppBar(context)
+                                    Box(modifier = Modifier.weight(1f))
+                                    NowPlayingBodyContent(context, data, isEqualizer) {
+                                        isEqualizer = it
                                     }
+                                    NowPlayingBodyBottomBar(context, data)
                                 }
                             }
                         }
                     }
                 }
-            )
+            }
         }
     }
 }
 
 @Composable
-private fun NowPlayingBodyCover(context: ViewContext, data: PlayerStateData) {
+private fun NowPlayingBodyCover(context: ViewContext, data: PlayerStateData, isEqualizer: Boolean) {
     data.run {
-        BoxWithConstraints(modifier = Modifier.padding(defaultHorizontalPadding, 0.dp)) {
-            val dimension = min(maxHeight, maxWidth)
-            AsyncImage(
-                song.createArtworkImageRequest(context.symphony).build(),
-                null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(dimension)
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape(12.dp))
-            )
+        when(isEqualizer) {
+            true -> Column {
+                Text(text = "Yeah sir")
+            }
+            false -> BoxWithConstraints(modifier = Modifier.padding(defaultHorizontalPadding, 0.dp)) {
+                val dimension = min(maxHeight, maxWidth)
+                AsyncImage(
+                    song.createArtworkImageRequest(context.symphony).build(),
+                    null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(dimension)
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(12.dp))
+                )
+            }
         }
+
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun NowPlayingBodyContent(context: ViewContext, data: PlayerStateData) {
+private fun NowPlayingBodyContent(context: ViewContext, data: PlayerStateData, isEqualizer: Boolean, onEqualizerIconClicked: (result: Boolean) -> Unit) {
     var isInFavorites by remember(data.song.id) {
         mutableStateOf(context.symphony.groove.playlist.isInFavorites(data.song.id))
     }
@@ -390,6 +401,19 @@ private fun NowPlayingBodyContent(context: ViewContext, data: PlayerStateData) {
                         context.symphony.radio.shorty.skip()
                     }
                 )
+                Box(
+                    modifier = Modifier
+                        .weight(1f),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    NowPlayingControlButton(
+                        icon = Icons.Default.Equalizer,
+                        onClick = {
+                            onEqualizerIconClicked(!isEqualizer)
+                        },
+                        color = if(isEqualizer)  MaterialTheme.colorScheme.onPrimary else LocalContentColor.current,
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(defaultHorizontalPadding))
             Row(
