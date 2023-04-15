@@ -86,6 +86,7 @@ class RadioPlayer(val symphony: Symphony, uri: Uri) {
     fun start() = mediaPlayer?.start()
     fun pause() = mediaPlayer?.pause()
     fun seek(to: Int) = mediaPlayer?.seekTo(to)
+    fun getAudioSessionId() = mediaPlayer?.audioSessionId
 
     @JvmName("setVolumeTo")
     fun setVolume(

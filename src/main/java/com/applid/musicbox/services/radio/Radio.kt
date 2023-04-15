@@ -1,5 +1,6 @@
 package com.applid.musicbox.services.radio
 
+import com.applid.musicbox.services.equalizer.Equalizer
 import com.applid.musicbox.Symphony
 import com.applid.musicbox.SymphonyHooks
 import com.applid.musicbox.utils.Eventer
@@ -9,7 +10,6 @@ import kotlinx.coroutines.launch
 import java.time.Instant
 import java.util.*
 import kotlin.math.max
-
 enum class RadioEvents {
     StartPlaying,
     StopPlaying,
@@ -46,6 +46,7 @@ class Radio(private val symphony: Symphony) : SymphonyHooks {
     private val nativeReceiver = RadioNativeReceiver(symphony)
 
     private var player: RadioPlayer? = null
+    private var equalizer: Equalizer = Equalizer()
     private var focusCounter = 0
     private var sleepTimer: RadioSleepTimer? = null
 
@@ -317,6 +318,7 @@ class Radio(private val symphony: Symphony) : SymphonyHooks {
     }
 
     override fun onSymphonyDestroy() {
+        releaseEqualizer()
         saveCurrentQueue()
         destroy()
     }
@@ -330,4 +332,14 @@ class Radio(private val symphony: Symphony) : SymphonyHooks {
             )
         )
     }
+    fun initializeEqualizer() : Boolean = equalizer.initialize(player?.getAudioSessionId())
+    fun releaseEqualizer() {
+        val isEnabled = equalizer.isEnabled()
+        if(isEnabled != null && isEnabled == true) equalizer.release()
+    }
+    fun getMinBandLevel() = equalizer.getMinBandLevel()
+    fun getMaxBandLevel() = equalizer.getMaxBandLevel()
+    fun getNumberOfBands() = equalizer.getNumberOfBands()
+    fun setBandLevel(band: Short, level: Short) = equalizer.setBandLevel(band, level)
+    fun getCenterFreq(band: Short) = equalizer.getCenterFreq(band)
 }

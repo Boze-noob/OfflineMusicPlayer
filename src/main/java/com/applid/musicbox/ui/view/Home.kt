@@ -106,23 +106,6 @@ fun HomeView(context: ViewContext) {
         )
     }
 
-        var mInterstitialAd: InterstitialAd? = null
-        val adRequest = AdRequest.Builder().build()
-
-        InterstitialAd.load(currentContext, HOME_INTERSTITIAL_AD_UNIT, adRequest, object : InterstitialAdLoadCallback() {
-            override fun onAdFailedToLoad(adError: LoadAdError) {
-                mInterstitialAd = null
-                println(adError)
-            }
-
-            override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                mInterstitialAd = interstitialAd
-            }
-        })
-
-
-
-
     val tabs = context.symphony.settings.getHomeTabs().toList()
     val labelVisibility = context.symphony.settings.getHomePageBottomBarLabelVisibility()
     var currentPage by remember {
@@ -265,23 +248,9 @@ fun HomeView(context: ViewContext) {
                                 currentPage = page
                                 context.symphony.settings.setHomeLastTab(currentPage)
 
-                                if(!showRateUs && (0..10).random() < 4) {
-                                    if(mInterstitialAd != null) {
-                                        InterstitialAdHelper().showAd(mInterstitialAd, currentContext as Activity)
-                                        mInterstitialAd = null
-                                    } else {
-                                        // The ad wasn't loaded yet. Load a new ad.
-                                        InterstitialAd.load(currentContext, HOME_INTERSTITIAL_AD_UNIT, adRequest, object : InterstitialAdLoadCallback() {
-                                            override fun onAdFailedToLoad(adError: LoadAdError) {
-                                                mInterstitialAd = null
-                                                println(adError)
-                                            }
-
-                                            override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                                                mInterstitialAd = interstitialAd
-                                                InterstitialAdHelper().showAd(mInterstitialAd, currentContext as Activity)
-                                            }
-                                        })
+                                if(!showRateUs && (0..10).random() < 5) {
+                                    InterstitialAdHelper().get(currentContext, HOME_INTERSTITIAL_AD_UNIT) {
+                                        it?.show(currentContext as Activity)
                                     }
                                 }
 

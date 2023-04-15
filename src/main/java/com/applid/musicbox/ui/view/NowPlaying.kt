@@ -1,5 +1,7 @@
 package com.applid.musicbox.ui.view
 
+import android.app.Activity
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,19 +17,26 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import coil.compose.AsyncImage
+import com.applid.musicbox.ads.EQUALIZER_INTERSTITIAL_AD_UNIT
+import com.applid.musicbox.ads.InterstitialAdHelper
 import com.applid.musicbox.services.SettingsKeys
 import com.applid.musicbox.services.groove.Song
 import com.applid.musicbox.services.radio.PlaybackPosition
@@ -41,7 +50,6 @@ import com.applid.musicbox.ui.helpers.Routes
 import com.applid.musicbox.ui.helpers.ScreenOrientation
 import com.applid.musicbox.ui.helpers.ViewContext
 import com.applid.musicbox.ui.helpers.navigate
-
 import com.applid.musicbox.utils.DurationFormatter
 import java.time.Duration
 import java.util.*
@@ -250,8 +258,31 @@ private fun NowPlayingBody(context: ViewContext, data: PlayerStateData) {
 private fun NowPlayingBodyCover(context: ViewContext, data: PlayerStateData, isEqualizer: Boolean) {
     data.run {
         when(isEqualizer) {
-            true -> Column {
-                Text(text = "Yeah sir")
+            true ->  BoxWithConstraints(modifier = Modifier.padding(defaultHorizontalPadding, 0.dp)) {
+                val dimension = min(maxHeight, maxWidth)
+                val minBandLevel =  context.symphony.radio.getMinBandLevel()
+                val maxBandLevel = context.symphony.radio.getMaxBandLevel()
+                val numberOfBands = context.symphony.radio.getNumberOfBands()
+                Row(
+                    modifier = Modifier.size(dimension),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    for (i in 0 until (numberOfBands?.toInt() ?: 0)) {
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            VerticalSlider(
+                                value = 0f,
+                                valueRangeFrom = minBandLevel?.toFloat() ?: 0f,
+                                valueRangeTo = maxBandLevel?.toFloat() ?: 0f,
+                                onValueChange = { context.symphony.radio.setBandLevel(i.toShort(), it.toInt().toShort()) },
+                                label = "${context.symphony.radio.getCenterFreq(i.toShort())}Hz",
+                                labelOpacity = 0.5f,
+                            )
+                        }
+                    }
+                }
             }
             false -> BoxWithConstraints(modifier = Modifier.padding(defaultHorizontalPadding, 0.dp)) {
                 val dimension = min(maxHeight, maxWidth)
@@ -272,7 +303,10 @@ private fun NowPlayingBodyCover(context: ViewContext, data: PlayerStateData, isE
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun NowPlayingBodyContent(context: ViewContext, data: PlayerStateData, isEqualizer: Boolean, onEqualizerIconClicked: (result: Boolean) -> Unit) {
+private fun NowPlayingBodyContent(context: ViewContext, data: PlayerStateData, isEqualizer: Boolean, onEqualizerIconClicked: (result: Boolean) -> Unit)
+{
+    val localContext = LocalContext.current
+
     var isInFavorites by remember(data.song.id) {
         mutableStateOf(context.symphony.groove.playlist.isInFavorites(data.song.id))
     }
@@ -409,9 +443,23 @@ private fun NowPlayingBodyContent(context: ViewContext, data: PlayerStateData, i
                     NowPlayingControlButton(
                         icon = Icons.Default.Equalizer,
                         onClick = {
-                            onEqualizerIconClicked(!isEqualizer)
+                            if(!isEqualizer) {
+                                val result = context.symphony.radio.initializeEqualizer()
+                                if(result) {
+                                    onEqualizerIconClicked(true)
+                                    InterstitialAdHelper().get(localContext, EQUALIZER_INTERSTITIAL_AD_UNIT) {
+                                        it?.show(localContext as Activity)
+                                    }
+                                }
+                                else Toast.makeText(localContext, "Unexpected error happen. Please try again!", Toast.LENGTH_SHORT).show()
+                            }
+                            else {
+                                onEqualizerIconClicked(false)
+                                context.symphony.radio.releaseEqualizer()
+                            }
                         },
-                        color = if(isEqualizer)  MaterialTheme.colorScheme.onPrimary else LocalContentColor.current,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        backgroundColor = if(isEqualizer)  MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
                     )
                 }
             }
@@ -661,6 +709,60 @@ private fun NowPlayingSleepTimerDialog(
         },
     )
 }
+
+@Composable
+fun VerticalSlider(
+    value: Float,
+    valueRangeFrom: Float,
+    valueRangeTo: Float,
+    onValueChange: (Float) -> Unit,
+    label: String,
+    labelOpacity: Float = 1f
+) {
+    var sliderPosition by remember { mutableStateOf(value ) }
+    Box {
+        Column(
+            modifier = Modifier.align(Alignment.TopCenter).padding(vertical = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = label,
+                modifier = Modifier.alpha(labelOpacity)
+            )
+            Slider(
+                value = sliderPosition,
+                onValueChange = {
+                    println("It is " + it)
+                    sliderPosition = it
+                    onValueChange(sliderPosition)
+                },
+                valueRange = valueRangeFrom..valueRangeTo,
+                modifier = Modifier
+                    .graphicsLayer {
+                        rotationZ = 270f
+                        transformOrigin = TransformOrigin(0f, 0f)
+                    }
+                    .layout { measurable, constraints ->
+                        val placeable = measurable.measure(
+                            Constraints(
+                                minWidth = constraints.minHeight,
+                                maxWidth = constraints.maxHeight,
+                                minHeight = constraints.minWidth,
+                                maxHeight = constraints.maxHeight,
+                            )
+                        )
+                        layout(placeable.height, placeable.width) {
+                            placeable.place(-placeable.width, 0)
+                        }
+                    }
+                    .padding(vertical = 5.dp)
+
+            )
+        }
+    }
+}
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
