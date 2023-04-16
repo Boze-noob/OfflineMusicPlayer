@@ -1,5 +1,4 @@
 package com.applid.musicbox.services.radio
-
 import com.applid.musicbox.services.equalizer.Equalizer
 import com.applid.musicbox.Symphony
 import com.applid.musicbox.SymphonyHooks
@@ -126,6 +125,8 @@ class Radio(private val symphony: Symphony) : SymphonyHooks {
                 )
             }
         }
+        releaseEqualizer()
+        initializeEqualizer(player?.getAudioSessionId())
     }
 
     fun pause() = pause {}
@@ -332,14 +333,13 @@ class Radio(private val symphony: Symphony) : SymphonyHooks {
             )
         )
     }
-    fun initializeEqualizer() : Boolean = equalizer.initialize(player?.getAudioSessionId())
-    fun releaseEqualizer() {
-        val isEnabled = equalizer.isEnabled()
-        if(isEnabled != null && isEnabled == true) equalizer.release()
-    }
+    fun initializeEqualizer(audioSessionId : Int?) : Boolean = equalizer.initialize(audioSessionId)
+    fun releaseEqualizer() = equalizer.release()
     fun getMinBandLevel() = equalizer.getMinBandLevel()
     fun getMaxBandLevel() = equalizer.getMaxBandLevel()
     fun getNumberOfBands() = equalizer.getNumberOfBands()
     fun setBandLevel(band: Short, level: Short) = equalizer.setBandLevel(band, level)
+    fun getBandLevel(band: Short) = equalizer.getBandLevel(band)
     fun getCenterFreq(band: Short) = equalizer.getCenterFreq(band)
+
 }

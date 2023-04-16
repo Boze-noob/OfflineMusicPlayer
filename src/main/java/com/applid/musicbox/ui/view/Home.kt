@@ -3,7 +3,6 @@ package com.applid.musicbox.ui.view
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -32,11 +31,6 @@ import com.applid.musicbox.ui.components.RateUsDialog
 import com.applid.musicbox.ui.components.TopAppBarMinimalTitle
 import com.applid.musicbox.ui.helpers.*
 import com.applid.musicbox.ui.view.home.*
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import kotlin.random.Random
 
 enum class HomePages(
     val label: (context: ViewContext) -> String,
@@ -244,10 +238,8 @@ fun HomeView(context: ViewContext) {
                                 })
                             },
                             onClick = {
-
                                 currentPage = page
                                 context.symphony.settings.setHomeLastTab(currentPage)
-
                                 if(!showRateUs && (0..10).random() < 5) {
                                     InterstitialAdHelper().get(currentContext, HOME_INTERSTITIAL_AD_UNIT) {
                                         it?.show(currentContext as Activity)
@@ -275,7 +267,6 @@ fun HomeView(context: ViewContext) {
                         } catch (e: ActivityNotFoundException) {
                             uriHandler.openUri(GooglePlayUrlWeb)
                         }
-
                         context.symphony.settings.setRateUs(true)
                     }
                 },

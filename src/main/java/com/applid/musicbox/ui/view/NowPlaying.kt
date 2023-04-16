@@ -1,7 +1,6 @@
 package com.applid.musicbox.ui.view
 
 import android.app.Activity
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -273,7 +272,7 @@ private fun NowPlayingBodyCover(context: ViewContext, data: PlayerStateData, isE
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             VerticalSlider(
-                                value = 0f,
+                                value = context.symphony.radio.getBandLevel(i.toShort())?.toFloat() ?: 0f,
                                 valueRangeFrom = minBandLevel?.toFloat() ?: 0f,
                                 valueRangeTo = maxBandLevel?.toFloat() ?: 0f,
                                 onValueChange = { context.symphony.radio.setBandLevel(i.toShort(), it.toInt().toShort()) },
@@ -444,21 +443,16 @@ private fun NowPlayingBodyContent(context: ViewContext, data: PlayerStateData, i
                         icon = Icons.Default.Equalizer,
                         onClick = {
                             if(!isEqualizer) {
-                                val result = context.symphony.radio.initializeEqualizer()
-                                if(result) {
-                                    onEqualizerIconClicked(true)
-                                    InterstitialAdHelper().get(localContext, EQUALIZER_INTERSTITIAL_AD_UNIT) {
+                                onEqualizerIconClicked(true)
+                                InterstitialAdHelper().get(localContext, EQUALIZER_INTERSTITIAL_AD_UNIT) {
                                         it?.show(localContext as Activity)
-                                    }
                                 }
-                                else Toast.makeText(localContext, "Unexpected error happen. Please try again!", Toast.LENGTH_SHORT).show()
                             }
                             else {
                                 onEqualizerIconClicked(false)
-                                context.symphony.radio.releaseEqualizer()
                             }
                         },
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = if(isEqualizer) MaterialTheme.colorScheme.onPrimary else LocalContentColor.current,
                         backgroundColor = if(isEqualizer)  MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
                     )
                 }
@@ -502,7 +496,6 @@ private fun NowPlayingBodyContent(context: ViewContext, data: PlayerStateData, i
                             SliderDefaults.Thumb(
                                 interactionSource = interactionSource,
                                 thumbSize = DpSize(12.dp, 12.dp),
-                                // NOTE: pad top to fix stupid layout
                                 modifier = Modifier.padding(top = 4.dp),
                             )
                         }
@@ -727,12 +720,11 @@ fun VerticalSlider(
         ) {
             Text(
                 text = label,
-                modifier = Modifier.alpha(labelOpacity)
+                modifier = Modifier.alpha(labelOpacity).padding(bottom = 2.dp)
             )
             Slider(
                 value = sliderPosition,
                 onValueChange = {
-                    println("It is " + it)
                     sliderPosition = it
                     onValueChange(sliderPosition)
                 },
