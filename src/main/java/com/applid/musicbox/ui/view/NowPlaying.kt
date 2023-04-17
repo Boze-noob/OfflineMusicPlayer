@@ -1,6 +1,7 @@
 package com.applid.musicbox.ui.view
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,10 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
+import androidx.compose.ui.unit.*
 import coil.compose.AsyncImage
 import com.applid.musicbox.ads.EQUALIZER_INTERSTITIAL_AD_UNIT
 import com.applid.musicbox.ads.InterstitialAdHelper
@@ -261,24 +259,51 @@ private fun NowPlayingBodyCover(context: ViewContext, data: PlayerStateData, isE
                 val dimension = min(maxHeight, maxWidth)
                 val minBandLevel =  context.symphony.radio.getMinBandLevel()
                 val maxBandLevel = context.symphony.radio.getMaxBandLevel()
-                val numberOfBands = context.symphony.radio.getNumberOfBands()
+                val numberOfBands = context.symphony.radio.getNumberOfBands()?.toInt() ?: 0
+                val localContext = LocalContext.current
+
                 Row(
                     modifier = Modifier.size(dimension),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    for (i in 0 until (numberOfBands?.toInt() ?: 0)) {
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            VerticalSlider(
-                                value = context.symphony.radio.getBandLevel(i.toShort())?.toFloat() ?: 0f,
-                                valueRangeFrom = minBandLevel?.toFloat() ?: 0f,
-                                valueRangeTo = maxBandLevel?.toFloat() ?: 0f,
-                                onValueChange = { context.symphony.radio.setBandLevel(i.toShort(), it.toInt().toShort()) },
-                                label = "${context.symphony.radio.getCenterFreq(i.toShort())}Hz",
-                                labelOpacity = 0.5f,
-                            )
+                    if(numberOfBands == 0) {
+                        LaunchedEffect(true) {
+                            Toast.makeText(
+                                localContext,
+                                "Press Play button!",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        for (i in 0 until 5) {
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                VerticalSlider(
+                                    value = 0.5f,
+                                    valueRangeFrom = 0f,
+                                    valueRangeTo =  1f,
+                                    onValueChange = { },
+                                    label = "",
+                                    isEnabled = false
+                                )
+                            }
+                        }
+                    } else {
+                        for (i in 0 until (numberOfBands )) {
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                VerticalSlider(
+                                    value = context.symphony.radio.getBandLevel(i.toShort())?.toFloat() ?: 0f,
+                                    valueRangeFrom = minBandLevel?.toFloat() ?: 0f,
+                                    valueRangeTo = maxBandLevel?.toFloat() ?: 0f,
+                                    onValueChange = { context.symphony.radio.setBandLevel(i.toShort(), it.toInt().toShort()) },
+                                    label = "${context.symphony.radio.getCenterFreq(i.toShort())}Hz",
+                                    labelOpacity = 0.5f,
+                                )
+                            }
                         }
                     }
                 }
@@ -710,17 +735,22 @@ fun VerticalSlider(
     valueRangeTo: Float,
     onValueChange: (Float) -> Unit,
     label: String,
-    labelOpacity: Float = 1f
+    labelOpacity: Float = 1f,
+    isEnabled: Boolean = true
 ) {
     var sliderPosition by remember { mutableStateOf(value ) }
     Box {
         Column(
-            modifier = Modifier.align(Alignment.TopCenter).padding(vertical = 20.dp),
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(vertical = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = label,
-                modifier = Modifier.alpha(labelOpacity).padding(bottom = 2.dp)
+                modifier = Modifier
+                    .alpha(labelOpacity)
+                    .padding(bottom = 2.dp)
             )
             Slider(
                 value = sliderPosition,
@@ -729,6 +759,7 @@ fun VerticalSlider(
                     onValueChange(sliderPosition)
                 },
                 valueRange = valueRangeFrom..valueRangeTo,
+                enabled = isEnabled,
                 modifier = Modifier
                     .graphicsLayer {
                         rotationZ = 270f
@@ -753,9 +784,6 @@ fun VerticalSlider(
         }
     }
 }
-
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun NowPlayingSleepTimerSetDialog(
