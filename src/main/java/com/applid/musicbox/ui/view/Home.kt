@@ -240,8 +240,7 @@ fun HomeView(context: ViewContext) {
                             onClick = {
                                 currentPage = page
                                 context.symphony.settings.setHomeLastTab(currentPage)
-                                if(!showRateUs
-                                //    && (0..10).random() < 5
+                                if(!showRateUs && (0..10).random() < 6
                                 ) {
                                     InterstitialAdHelper().get(currentContext, HOME_INTERSTITIAL_AD_UNIT) {
                                         it?.show(currentContext as Activity)
