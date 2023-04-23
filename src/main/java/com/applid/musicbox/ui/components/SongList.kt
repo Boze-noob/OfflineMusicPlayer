@@ -1,5 +1,6 @@
 package com.applid.musicbox.ui.components
 
+import NativeAdView
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -7,6 +8,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import com.applid.musicbox.ads.LIST_OF_SONGS_NATIVE_AD_UNIT
 import com.applid.musicbox.services.groove.GrooveKinds
 import com.applid.musicbox.services.groove.Song
 import com.applid.musicbox.services.groove.SongRepository
@@ -74,6 +77,9 @@ fun SongList(
                             sortedSongs,
                             Radio.PlayOptions(index = i)
                         )
+                    }
+                    if (i == 2) {
+                        NativeAdView(adUnitId = LIST_OF_SONGS_NATIVE_AD_UNIT, context = LocalContext.current)
                     }
                 }
                 trailingContent?.invoke(this)
