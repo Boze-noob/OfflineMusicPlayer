@@ -1,5 +1,7 @@
 # MusicPlayer App
 
+https://play.google.com/store/apps/details?id=com.applid.musicbox
+
 The MusicPlayer app is a feature-rich music player built using Kotlin and Jetpack Compose. It offers a seamless offline music listening experience, allowing you to play locally stored songs even when navigating outside the app. With its intuitive UI, animations, and advanced features, it's the ultimate companion for music enthusiasts.
 
 ## Features
