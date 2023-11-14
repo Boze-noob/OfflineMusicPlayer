@@ -1,10 +1,12 @@
 package com.applid.musicbox.ui.components
 
+import DownloaderManager
 import NativeAdView
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -19,45 +21,67 @@ import com.applid.musicbox.ui.helpers.ViewContext
 
 @Composable
 fun SongList(
-    context: ViewContext,
+    viewContext: ViewContext,
     songs: List<Song>,
     leadingContent: (LazyListScope.() -> Unit)? = null,
     trailingContent: (LazyListScope.() -> Unit)? = null,
     type: SongListType = SongListType.Default,
     disableHeartIcon: Boolean = false,
 ) {
+    val context = LocalContext.current
+
     var sortBy by remember {
-        mutableStateOf(type.getLastUsedSortBy(context))
+        mutableStateOf(type.getLastUsedSortBy(viewContext))
     }
     var sortReverse by remember {
-        mutableStateOf(type.getLastUsedSortReverse(context))
+        mutableStateOf(type.getLastUsedSortReverse(viewContext))
     }
     val sortedSongs by remember {
         derivedStateOf { SongRepository.sort(songs, sortBy, sortReverse) }
+    }
+    var isDownloadDialogVisible by remember {
+        mutableStateOf(false)
+    }
+
+    if(isDownloadDialogVisible) {
+        DownloadSongDialog(
+            viewContext,
+            onDismissRequest = { isDownloadRequested: Boolean, url: String ->
+                isDownloadDialogVisible = false
+                if(isDownloadRequested) {
+                    DownloaderManager(context).downloadAudio(url)
+                }
+            }
+        )
     }
 
     MediaSortBarScaffold(
         mediaSortBar = {
             MediaSortBar(
-                context,
+                viewContext,
                 reverse = sortReverse,
                 onReverseChange = {
                     sortReverse = it
-                    type.setLastUsedSortReverse(context, it)
+                    type.setLastUsedSortReverse(viewContext, it)
                 },
                 sort = sortBy,
                 sorts = SongSortBy.values().associateWith { x -> { x.label(it) } },
                 onSortChange = {
                     sortBy = it
-                    type.setLastUsedSortBy(context, it)
+                    type.setLastUsedSortBy(viewContext, it)
                 },
                 label = {
-                    Text(context.symphony.t.XSongs(songs.size))
+                    Text(viewContext.symphony.t.XSongs(songs.size))
                 },
                 onShufflePlay = {
-                    context.symphony.radio.shorty.playQueue(sortedSongs, shuffle = true)
+                    viewContext.symphony.radio.shorty.playQueue(sortedSongs, shuffle = true)
                 }
             )
+        },
+        actions = {
+            FilledTonalButton(onClick = {  }) {
+                Text(text = viewContext.symphony.t.download)
+            }
         },
         content = {
             val lazyListState = rememberLazyListState()
@@ -72,8 +96,8 @@ fun SongList(
                     key = { i, x -> "$i-${x.id}" },
                     contentType = { _, _ -> GrooveKinds.SONG }
                 ) { i, song ->
-                    SongCard(context, song, disableHeartIcon = disableHeartIcon) {
-                        context.symphony.radio.shorty.playQueue(
+                    SongCard(viewContext, song, disableHeartIcon = disableHeartIcon) {
+                        viewContext.symphony.radio.shorty.playQueue(
                             sortedSongs,
                             Radio.PlayOptions(index = i)
                         )

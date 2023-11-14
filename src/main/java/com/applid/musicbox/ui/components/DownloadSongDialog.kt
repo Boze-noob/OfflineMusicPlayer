@@ -8,33 +8,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.res.painterResource
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.text.font.FontWeight
-import com.applid.musicbox.R
 import com.applid.musicbox.ui.helpers.ViewContext
-import com.applid.musicbox.utils.Url
+import isValidUrl
+import androidx.compose.runtime.*
 
-//TODO check this out, fix formatting, etc
-//fetch downloaded song from the db, and add it to the list
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DownloadSongDialog(
     context: ViewContext,
-    onDismissRequest: (isDownloadRequested : Boolean, url : String) -> Unit,
+    onDismissRequest: (isDownloadRequested: Boolean, url: String) -> Unit,
 ) {
-    var enteredUrl by remember { mutableStateOf("") }
-    var showUrlValidationError by remember { mutableStateOf(false) }
+        var enteredUrl by remember { mutableStateOf("") }
+        var showUrlValidationError by remember { mutableStateOf(false) }
 
-fun handleOnDownloadClick(enteredUrl : String) {
-if(isValidUrl(enteredUrl)) onDismissRequest(true, enteredUrl)
-else showUrlValidationError = true
-}
+    fun handleOnDownloadClick(enteredUrl: String) {
+        if (isValidUrl(enteredUrl)) onDismissRequest(true, enteredUrl)
+        else showUrlValidationError = true
+    }
 
     ScaffoldDialog(
-        onDismissRequest = {onDismissRequest(false, "")},
+        onDismissRequest = { onDismissRequest(false, "") },
         title = {
-            Text( context.symphony.t.downloadSong
+            Text(
+                context.symphony.t.downloadSong
             )
         },
         content = {
@@ -45,31 +45,32 @@ else showUrlValidationError = true
                     Text(
                         textAlign = TextAlign.Center,
 
-                        text =  context.symphony.t.downloadSong
+                        text = context.symphony.t.downloadSong
                     )
                     Spacer(modifier = Modifier.height(8.dp))
+
                     OutlinedTextField(
-        value = enteredUrl,
-        onValueChange = { newText ->
-            enteredUrl = newText
-        },
-        label = { Text(context.symphony.t.pasteUrl) },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color.Red,
-            unfocusedBorderColor = Color.Gray
-        ),
-         isError = showUrlValidationError,
-         supportingText = {
-            if (showUrlValidationError) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = context.symphony.t.invalidUrl,
-                    color = MaterialTheme.colorScheme.error
-                )
-            }
-        }
-    )
-                   Spacer(modifier = Modifier.height(8.dp))
+                        value = enteredUrl,
+                        onValueChange = { newText : String ->
+                            enteredUrl = newText
+                        },
+                        label = { Text(context.symphony.t.pasteUrl) },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color.Red,
+                            unfocusedBorderColor = Color.Gray,
+                        ),
+                        isError = showUrlValidationError,
+                        supportingText = {
+                            if (showUrlValidationError) {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = context.symphony.t.invalidUrl,
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
                     ElevatedButton(
                         colors = ButtonDefaults.buttonColors(
                             contentColor = Color.White
@@ -79,10 +80,11 @@ else showUrlValidationError = true
                             handleOnDownloadClick(enteredUrl)
                         },
 
-                    ) {
+                        ) {
                         Text(
                             fontWeight = FontWeight.Bold,
-                            text = context.symphony.t.download)
+                            text = context.symphony.t.download
+                        )
                     }
                     Button(
                         onClick = {
