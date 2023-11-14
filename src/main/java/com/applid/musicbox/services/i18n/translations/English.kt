@@ -20,9 +20,13 @@ class English : Translations {
             "So, whether you're a die-hard music fan or simply looking for a great app to help you enjoy your favorite tunes, our music player app is the perfect choice."
     override val otherApps: String = "Other apps"
     override val contactUs: String = "Contact us"
-
-
-    override val language = "English"
+    override val inProgress : String = "In progress"
+    override val musicboxDownloadsSong : String = "MusicBox downloads the song"
+    override val downloadSong : String = "Download the Song"
+    override val download : String = "Download"
+    override val pasteUrl : String = "Paste URL"
+    override val language : String = "English"
+    override val invalidUrl : String = "Invalid URL"
     override val unk = "?"
     override val songs = "Songs"
     override val artists = "Artists"

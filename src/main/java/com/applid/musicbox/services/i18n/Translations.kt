@@ -12,7 +12,12 @@ interface Translations {
     val aboutUsContent : String
     val otherApps : String
     val contactUs : String
-
+    val downloadSong: String
+    val inProgress : String
+    val musicboxDownloadsSong : String
+    val download : String
+    val pasteUrl : String
+    val invalidUrl : String
     val language: String
     val unk: String
     val songs: String
