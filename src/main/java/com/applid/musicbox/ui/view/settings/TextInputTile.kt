@@ -29,8 +29,8 @@ fun SettingsTextInputTile(
         ListItem(
             colors = SettingsTileDefaults.listItemColors(),
             leadingContent = { icon() },
-            headlineText = { title() },
-            supportingText = { Text(value) },
+            headlineContent = { title() },
+            supportingContent = { Text(value) },
         )
     }
 
@@ -55,7 +55,7 @@ fun SettingsTextInputTile(
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                        colors = OutlinedTextFieldDefaults.colors(
                             unfocusedBorderColor = DividerDefaults.color,
                         ),
                         value = input ?: value,

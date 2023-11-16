@@ -11,7 +11,7 @@ import androidx.compose.ui.platform.LocalDensity
 @Composable
 fun MediaSortBarScaffold(
     mediaSortBar: @Composable () -> Unit,
-    actions: @Composable () -> Unit,
+    actions: @Composable () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     val localDensity = LocalDensity.current
@@ -25,10 +25,12 @@ fun MediaSortBarScaffold(
         ) {
             mediaSortBar()
         }
-        Box( modifier = Modifier.onGloballyPositioned {
-            height = it.size.height
-        }) {
-            actions()
+        if(actions != {}) {
+            Box( modifier = Modifier.onGloballyPositioned {
+                height = it.size.height
+            }) {
+                actions()
+            }
         }
         Box(
             modifier = Modifier
