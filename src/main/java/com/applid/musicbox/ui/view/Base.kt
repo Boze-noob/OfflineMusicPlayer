@@ -10,10 +10,8 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.applid.musicbox.MainActivity
 import com.applid.musicbox.Symphony
-
 import com.applid.musicbox.ui.theme.SymphonyTheme
-import io.github.zyrouge.symphony.ui.view.*
-
+//TODO fix this whole file
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun BaseView(symphony: Symphony, activity: MainActivity) {
@@ -31,37 +29,37 @@ fun BaseView(symphony: Symphony, activity: MainActivity) {
             ) {
                 composable(
                     Routes.Home.route,
-                    popEnterTransition = { FadeTransition.enterTransition() },
+                    //TODO add transition popEnterTransition = { FadeTransition.enterTransition() },
                 ) {
                     HomeView(context)
                 }
                 composable(
                     Routes.NowPlaying.route,
-                    enterTransition = { SlideTransition.slideUp.enterTransition() },
-                    exitTransition = { FadeTransition.exitTransition() },
-                    popEnterTransition = { FadeTransition.enterTransition() },
-                    popExitTransition = { SlideTransition.slideDown.exitTransition() },
+                    //TODO add transition enterTransition = { SlideTransition.slideUp.enterTransition() },
+                    //TODO add transition exitTransition = { FadeTransition.exitTransition() },
+                    //TODO add transition popEnterTransition = { FadeTransition.enterTransition() },
+                    //TODO add transition popExitTransition = { SlideTransition.slideDown.exitTransition() },
                 ) {
                     NowPlayingView(context)
                 }
                 composable(
                     Routes.Queue.route,
-                    enterTransition = { SlideTransition.slideUp.enterTransition() },
-                    exitTransition = { SlideTransition.slideDown.exitTransition() },
+                    //TODO add transition enterTransition = { SlideTransition.slideUp.enterTransition() },
+                    //TODO add transition exitTransition = { SlideTransition.slideDown.exitTransition() },
                 ) {
                     QueueView(context)
                 }
                 composable(
                     Routes.Settings.route,
-                    enterTransition = { ScaleTransition.scaleDown.enterTransition() },
-                    exitTransition = { ScaleTransition.scaleUp.exitTransition() },
+                    //TODO add transition enterTransition = { ScaleTransition.scaleDown.enterTransition() },
+                    //TODO add transition exitTransition = { ScaleTransition.scaleUp.exitTransition() },
                 ) {
                     SettingsView(context)
                 }
                 composable(
                     Routes.Artist.route,
-                    enterTransition = { SlideTransition.slideLeft.enterTransition() },
-                    exitTransition = { SlideTransition.slideLeft.exitTransition() },
+                    //TODO add transition enterTransition = { SlideTransition.slideLeft.enterTransition() },
+                    //TODO add transition exitTransition = { SlideTransition.slideLeft.exitTransition() },
                 ) { backStackEntry ->
                     ArtistView(
                         context,
@@ -71,8 +69,8 @@ fun BaseView(symphony: Symphony, activity: MainActivity) {
                 }
                 composable(
                     Routes.Album.route,
-                    enterTransition = { SlideTransition.slideLeft.enterTransition() },
-                    exitTransition = { SlideTransition.slideLeft.exitTransition() },
+                    //TODO add transition enterTransition = { SlideTransition.slideLeft.enterTransition() },
+                    //TODO add transition exitTransition = { SlideTransition.slideLeft.exitTransition() },
                 ) { backStackEntry ->
                     AlbumView(
                         context,
@@ -82,15 +80,15 @@ fun BaseView(symphony: Symphony, activity: MainActivity) {
                 }
                 composable(
                     Routes.Search.route,
-                    enterTransition = { SlideTransition.slideDown.enterTransition() },
-                    exitTransition = { SlideTransition.slideUp.exitTransition() },
+                    //TODO add transition enterTransition = { SlideTransition.slideDown.enterTransition() },
+                    //TODO add transition exitTransition = { SlideTransition.slideUp.exitTransition() },
                 ) {
                     SearchView(context)
                 }
                 composable(
                     Routes.AlbumArtist.route,
-                    enterTransition = { SlideTransition.slideLeft.enterTransition() },
-                    exitTransition = { SlideTransition.slideLeft.exitTransition() },
+                    //TODO add transition enterTransition = { SlideTransition.slideLeft.enterTransition() },
+                    //TODO add transition exitTransition = { SlideTransition.slideLeft.exitTransition() },
                 ) { backStackEntry ->
                     AlbumArtistView(
                         context,
@@ -100,8 +98,8 @@ fun BaseView(symphony: Symphony, activity: MainActivity) {
                 }
                 composable(
                     Routes.Genre.route,
-                    enterTransition = { SlideTransition.slideLeft.enterTransition() },
-                    exitTransition = { SlideTransition.slideLeft.exitTransition() },
+                    //TODO add transition enterTransition = { SlideTransition.slideLeft.enterTransition() },
+                    //TODO add transition exitTransition = { SlideTransition.slideLeft.exitTransition() },
                 ) { backStackEntry ->
                     GenreView(
                         context,
@@ -111,8 +109,8 @@ fun BaseView(symphony: Symphony, activity: MainActivity) {
                 }
                 composable(
                     Routes.Playlist.route,
-                    enterTransition = { SlideTransition.slideLeft.enterTransition() },
-                    exitTransition = { SlideTransition.slideLeft.exitTransition() },
+                    //TODO add transition enterTransition = { SlideTransition.slideLeft.enterTransition() },
+                    //TODO add transition exitTransition = { SlideTransition.slideLeft.exitTransition() },
                 ) { backStackEntry ->
                     PlaylistView(
                         context,

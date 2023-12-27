@@ -9,7 +9,7 @@ import com.applid.musicbox.R
 object Assets {
 
     val placeholderId = getRandomPlaceHolder()
-    const val listPlaceholderId = R.drawable.list_placeholder;
+    val listPlaceholderId = R.drawable.list_placeholder
 
     fun getPlaceholderUri(context: Context): Uri {
         return buildUriOfResource(context.resources, placeholderId)

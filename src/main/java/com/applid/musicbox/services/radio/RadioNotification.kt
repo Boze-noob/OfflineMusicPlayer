@@ -106,7 +106,7 @@ class RadioNotification(private val symphony: Symphony) {
     }
 
     companion object {
-        const val CHANNEL_ID = "${R.string.app_name}_media_notification"
+        val CHANNEL_ID = "${R.string.app_name}_media_notification"
         const val NOTIFICATION_ID = 69421
     }
 }

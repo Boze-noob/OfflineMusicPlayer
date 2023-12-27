@@ -251,11 +251,11 @@ class RadioSession(val symphony: Symphony) {
     }
 
     companion object {
-        const val MEDIA_SESSION_ID = "${R.string.app_name}_media_session"
+        val MEDIA_SESSION_ID = "${R.string.app_name}_media_session"
 
-        const val ACTION_PLAY_PAUSE = "${R.string.app_name}_play_pause"
-        const val ACTION_PREVIOUS = "${R.string.app_name}_previous"
-        const val ACTION_NEXT = "${R.string.app_name}_next"
-        const val ACTION_STOP = "${R.string.app_name}_stop"
+        val ACTION_PLAY_PAUSE = "${R.string.app_name}_play_pause"
+        val ACTION_PREVIOUS = "${R.string.app_name}_previous"
+        val ACTION_NEXT = "${R.string.app_name}_next"
+        val ACTION_STOP = "${R.string.app_name}_stop"
     }
 }
