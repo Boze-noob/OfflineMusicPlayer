@@ -6,7 +6,7 @@ import android.content.ActivityNotFoundException
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -81,7 +81,12 @@ enum class HomePages(
         label = { it.symphony.t.tree },
         selectedIcon = { Icons.Filled.AccountTree },
         unselectedIcon = { Icons.Outlined.AccountTree }
-    );
+    ),
+    Download(
+        label = { it.symphony.t.download },
+        selectedIcon = { Icons.Filled.Download },
+        unselectedIcon = { Icons.Outlined.Download }
+    )
 }
 
 enum class HomePageBottomBarLabelVisibility {
@@ -141,7 +146,7 @@ fun HomeView(context: ViewContext) {
                     )
                 },
                 title = {
-                    Crossfade(targetState = currentPage.label(context)) {
+                    Crossfade(targetState = currentPage.label(context), label = "") {
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
@@ -190,8 +195,9 @@ fun HomeView(context: ViewContext) {
                     .fillMaxSize(),
                 transitionSpec = {
                     SlideTransition.slideUp.enterTransition()
-                        .with(ScaleTransition.scaleDown.exitTransition())
+                        .togetherWith(ScaleTransition.scaleDown.exitTransition())
                 },
+                label = "",
             ) { page ->
                 when (page) {
                     HomePages.ForYou -> ForYouView(context, data)
@@ -203,6 +209,7 @@ fun HomeView(context: ViewContext) {
                     HomePages.Folders -> FoldersView(context, data)
                     HomePages.Playlists -> PlaylistsView(context, data)
                     HomePages.Tree -> TreeView(context, data)
+                    HomePages.Download -> DownloadView(context)
                 }
             }
         },
@@ -218,7 +225,7 @@ fun HomeView(context: ViewContext) {
                             selected = isSelected,
                             alwaysShowLabel = labelVisibility == HomePageBottomBarLabelVisibility.ALWAYS_VISIBLE,
                             icon = {
-                                Crossfade(targetState = isSelected) {
+                                Crossfade(targetState = isSelected, label = "") {
                                     Icon(
                                         if (it) page.selectedIcon() else page.unselectedIcon(),
                                         label,
@@ -240,8 +247,7 @@ fun HomeView(context: ViewContext) {
                             onClick = {
                                 currentPage = page
                                 context.symphony.settings.setHomeLastTab(currentPage)
-                                if(!showRateUs && (0..10).random() < 6
-                                ) {
+                                if(!showRateUs && (0..10).random() < 5) {
                                     InterstitialAdHelper().get(currentContext, HOME_INTERSTITIAL_AD_UNIT) {
                                         it?.show(currentContext as Activity)
                                     }

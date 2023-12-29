@@ -1,11 +1,9 @@
 package com.applid.musicbox.ui.components
 
-import DownloaderManager
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -28,7 +26,6 @@ fun SongList(
     type: SongListType = SongListType.Default,
     disableHeartIcon: Boolean = false,
 ) {
-    val context = LocalContext.current
 
     var sortBy by remember {
         mutableStateOf(type.getLastUsedSortBy(viewContext))
@@ -38,21 +35,6 @@ fun SongList(
     }
     val sortedSongs by remember {
         derivedStateOf { SongRepository.sort(songs, sortBy, sortReverse) }
-    }
-    var isDownloadDialogVisible by remember {
-        mutableStateOf(false)
-    }
-
-    if(isDownloadDialogVisible) {
-        DownloadSongDialog(
-            viewContext,
-            onDismissRequest = { isDownloadRequested: Boolean, url: String ->
-                isDownloadDialogVisible = false
-                if(isDownloadRequested) {
-                    DownloaderManager(context).downloadAudio(url)
-                }
-            }
-        )
     }
 
     MediaSortBarScaffold(
@@ -77,11 +59,6 @@ fun SongList(
                     viewContext.symphony.radio.shorty.playQueue(sortedSongs, shuffle = true)
                 }
             )
-        },
-        actions = {
-            FilledTonalButton(onClick = {  }) {
-                Text(text = viewContext.symphony.t.download)
-            }
         },
         content = {
             val lazyListState = rememberLazyListState()

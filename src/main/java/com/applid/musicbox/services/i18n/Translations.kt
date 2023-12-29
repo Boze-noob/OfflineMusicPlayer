@@ -10,12 +10,15 @@ interface Translations {
     val info: String
     val close: String
     val aboutUsContent : String
+    val freeSongDownloader : String
+    val supportedFormats : String
     val otherApps : String
     val contactUs : String
     val downloadSong: String
     val inProgress : String
     val musicboxDownloadsSong : String
     val download : String
+    val url : String
     val pasteUrl : String
     val invalidUrl : String
     val language: String
@@ -146,6 +149,7 @@ interface Translations {
     val enableSeekControls: String
     val miniPlayerTrackControls: String
     val miniPlayerSeekControls: String
+    val warning: String
 
     fun XSongs(x: Int): String
     fun playingXofY(x: Int, y: Int): String
