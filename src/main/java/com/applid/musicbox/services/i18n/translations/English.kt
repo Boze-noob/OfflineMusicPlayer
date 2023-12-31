@@ -21,7 +21,7 @@ class English : Translations {
     override val otherApps: String = "Other apps"
     override val contactUs: String = "Contact us"
     override val inProgress : String = "In progress"
-    override val musicboxDownloadsSong : String = "MusicBox Downloads the song"
+    override val musicboxDownloadsSong : String = "MusicBox Downloads the Song"
     override val downloadSong : String = "Download the Song"
     override val freeSongDownloader : String = "Free Song Downloader"
     override val supportedFormats : String = "Supported Formats"
