@@ -21,7 +21,7 @@ fun BannerAdView(adUnitId: String) {
 
             factory = { context ->
                 AdView(context).apply {
-                    setAdSize(AdSize.LARGE_BANNER)
+                    setAdSize(AdSize.BANNER)
                     setAdUnitId(adUnitId)
                     loadAd(AdRequest.Builder().build())
                 }

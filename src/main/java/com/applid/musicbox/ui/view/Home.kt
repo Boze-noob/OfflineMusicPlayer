@@ -105,6 +105,12 @@ fun HomeView(context: ViewContext) {
         )
     }
 
+    var isAdLoadingOrShown  by remember {
+        mutableStateOf(
+            false
+        )
+    }
+
     val tabs = context.symphony.settings.getHomeTabs().toList()
     val labelVisibility = context.symphony.settings.getHomePageBottomBarLabelVisibility()
     var currentPage by remember {
@@ -247,13 +253,14 @@ fun HomeView(context: ViewContext) {
                             onClick = {
                                 currentPage = page
                                 context.symphony.settings.setHomeLastTab(currentPage)
-                                if(!showRateUs && (0..10).random() < 5) {
+                                if(!isAdLoadingOrShown && !showRateUs && (0..10).random() < 5) {
+                                    isAdLoadingOrShown = true
+
                                     InterstitialAdHelper().get(currentContext, HOME_INTERSTITIAL_AD_UNIT) {
+                                        isAdLoadingOrShown = false
                                         it?.show(currentContext as Activity)
                                     }
                                 }
-
-
                             }
                         )
                     }

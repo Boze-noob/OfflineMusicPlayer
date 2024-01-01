@@ -73,15 +73,14 @@ fun SongList(
                     key = { i, x -> "$i-${x.id}" },
                     contentType = { _, _ -> GrooveKinds.SONG }
                 ) { i, song ->
+
                     SongCard(viewContext, song, disableHeartIcon = disableHeartIcon) {
                         viewContext.symphony.radio.shorty.playQueue(
                             sortedSongs,
                             Radio.PlayOptions(index = i)
                         )
                     }
-                    if (i == 2) {
-                        BannerAdView(adUnitId = LIST_OF_SONGS_BANNER_AD_UNIT)
-                    }
+
                 }
                 trailingContent?.invoke(this)
             }
