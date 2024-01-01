@@ -7,9 +7,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import com.applid.musicbox.ads.BannerAdView
-import com.applid.musicbox.ads.LIST_OF_SONGS_BANNER_AD_UNIT
 import com.applid.musicbox.services.groove.GrooveKinds
 import com.applid.musicbox.services.groove.Song
 import com.applid.musicbox.services.groove.SongRepository
