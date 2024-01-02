@@ -5,8 +5,8 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import com.applid.musicbox.services.i18n.Translations
-//TODO files does not have any meaningful names, when they are downloaded.
-// Also looks like we need youtube api in order to download audio files from there
+//TODO delete this file and the folder
+
 class DownloaderManager(private val context: Context) {
 
    private val downloadManager = context.getSystemService(DownloadManager::class.java)
