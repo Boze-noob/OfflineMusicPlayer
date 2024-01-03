@@ -28,6 +28,7 @@ import com.google.android.gms.ads.nativead.NativeAdOptions.ADCHOICES_TOP_RIGHT
 //TODO SHOULD BE FIXED
 @Composable
 fun NativeAdView(adUnitId: String, context: Context) {
+    //TODO try this -> AndroidViewBinding(factory = LayoutNativeAdBinding::inflate) {
     var adViewState by remember { mutableStateOf<AdViewState>(AdViewState.Loading) }
     var nativeAd by remember { mutableStateOf<NativeAd?>(null) }
 
