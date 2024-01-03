@@ -16,10 +16,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.applid.musicbox.ui.helpers.ViewContext
-import com.applid.musicbox.services.managers.DownloaderManager
 import isValidUrl
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.sp
+import com.applid.musicbox.services.downloaders.SongDownloader
 
 @Composable
 fun DownloadSongForm (
@@ -33,7 +33,7 @@ fun DownloadSongForm (
         if (!isValidUrl(enteredUrl)) showUrlValidationError = true
         else {
             if(showUrlValidationError) showUrlValidationError = false
-            val songDownloader = SongDownloader(localContext, viewCOntext)
+            val songDownloader = SongDownloader(localContext, viewContext)
             songDownloader.download(enteredUrl)
 
         }
@@ -109,7 +109,7 @@ fun DownloadSongForm (
                         ),
                         shape = RoundedCornerShape(10.dp),
                         onClick = {
-                            handleOnDownloadClick(enteredUrl.text, localContext)
+                            handleOnDownloadClick(enteredUrl.text)
                         },
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
