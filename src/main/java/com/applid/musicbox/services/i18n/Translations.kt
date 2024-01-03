@@ -150,6 +150,8 @@ interface Translations {
     val miniPlayerTrackControls: String
     val miniPlayerSeekControls: String
     val warning: String
+    val commandAlreadyRunning: String
+    val commandQueued: String
 
     fun XSongs(x: Int): String
     fun playingXofY(x: Int, y: Int): String

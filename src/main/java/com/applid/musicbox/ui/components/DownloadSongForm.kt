@@ -29,11 +29,11 @@ fun DownloadSongForm (
     var enteredUrl by remember { mutableStateOf(TextFieldValue()) }
     var showUrlValidationError by remember { mutableStateOf(false) }
 
-    fun handleOnDownloadClick(enteredUrl: String, localContext: Context) {
+    fun handleOnDownloadClick(enteredUrl: String) {
         if (!isValidUrl(enteredUrl)) showUrlValidationError = true
         else {
             if(showUrlValidationError) showUrlValidationError = false
-            val songDownloader = SongDownloader(localContext)
+            val songDownloader = SongDownloader(localContext, viewCOntext)
             songDownloader.download(enteredUrl)
 
         }

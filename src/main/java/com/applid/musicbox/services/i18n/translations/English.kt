@@ -159,6 +159,8 @@ class English : Translations {
     override val miniPlayerTrackControls = "Mini-player track controls"
     override val miniPlayerSeekControls = "Mini-player seek controls"
     override val warning = "Warning"
+    override val commandAlreadyRunning = "Command already running"
+    override val commandQueued = "Command queued"
 
     override fun playingXofY(x: Int, y: Int) = "Playing $x of $y"
     override fun unknownArtistX(name: String) = "Unknown artist ($name)"

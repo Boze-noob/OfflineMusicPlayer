@@ -16,7 +16,7 @@ import org.yausername.dvd.work.CommandWorker
 import org.yausername.dvd.work.CommandWorker.Companion.commandKey
 import kotlinx.android.synthetic.main.fragment_youtube_dl.*
 
-class SongDownloader(private val context: Context) {
+class SongDownloader(private val localContext: Context, private val viewContext: ViewContext) {
 
 fun download(private val url : String) {
 
@@ -33,8 +33,8 @@ fun download(private val url : String) {
         val running = state === WorkInfo.State.RUNNING || state === WorkInfo.State.ENQUEUED
         if (running) {
             Toast.makeText(
-                context,
-                R.string.command_already_running,
+                localContext,
+                viewContext.symphony.t.commandAlreadyRunning,
                 Toast.LENGTH_LONG
             ).show()
             return
@@ -53,8 +53,8 @@ fun download(private val url : String) {
             workRequest
         )
         Toast.makeText(
-            context,
-            R.string.command_queued,
+            localContext,
+            viewContext.symphony.t.commandQueued,
             Toast.LENGTH_LONG
         ).show()
     }
