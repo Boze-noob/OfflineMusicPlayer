@@ -1,9 +1,5 @@
 package com.applid.musicbox.services.downloaders
 
-//TODO sample command
-//<string name="sample_command" translatable="false">--extract-audio --audio-format mp3 -o /sdcard/Download/youtubedl-android/%(title)s.%(ext)s https://www.youtube.com/watch?v=dQw4w9WgXcQ</string>
-
-//TODO use what you need
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
@@ -20,42 +16,20 @@ import org.yausername.dvd.work.CommandWorker
 import org.yausername.dvd.work.CommandWorker.Companion.commandKey
 import kotlinx.android.synthetic.main.fragment_youtube_dl.*
 
-class YoutubeDlFragment : Fragment(), View.OnClickListener {
+class SongDownloader(private val context: Context) {
 
-    private var command: String? = null
+fun download(private val url : String) {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_youtube_dl, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initViews(view)
-    }
-
-    private fun initViews(view: View) {
-        command_btn.setOnClickListener(this)
-    }
-
-    override fun onClick(view: View?) {
-        when (view?.id) {
-            R.id.command_btn -> {
-                command = command_et.text.toString()
-                if (isStoragePermissionGranted() && !command.isNullOrBlank()) {
-                    startCommand(command!!)
-                }
-            }
-        }
-    }
+    if (isStoragePermissionGranted() && !url.isNullOrBlank()) {
+        var command: String = "--extract-audio --audio-format mp3 -o /sdcard/Download/%(title)s.%(ext)s " + url;
+        startCommand(command!!)
+    } 
+}
 
     private fun startCommand(command: String) {
         val workTag = CommandWorker.commandWorkTag
         val workManager = WorkManager.getInstance(activity?.applicationContext!!)
-        val state =
-            workManager.getWorkInfosByTag(workTag).get()?.getOrNull(0)?.state
+        val state = workManager.getWorkInfosByTag(workTag).get()?.getOrNull(0)?.state
         val running = state === WorkInfo.State.RUNNING || state === WorkInfo.State.ENQUEUED
         if (running) {
             Toast.makeText(
@@ -100,7 +74,8 @@ class YoutubeDlFragment : Fragment(), View.OnClickListener {
                 )
                 false
             }
-        } else { //permission is automatically granted on sdk<23 upon installation
+        } else { 
+            //permission is automatically granted on sdk<23 upon installation
             true
         }
     }

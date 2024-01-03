@@ -3,7 +3,7 @@ package com.applid.musicbox.ui.view.home
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.applid.musicbox.ui.components.DownloadForm
+import com.applid.musicbox.ui.components.DownloadSongForm
 import com.applid.musicbox.ui.components.LoaderScaffold
 import com.applid.musicbox.ui.helpers.ViewContext
 
@@ -13,6 +13,6 @@ fun DownloadView(viewContext: ViewContext) {
 
 
     LoaderScaffold(viewContext, isLoading = false) {
-        DownloadForm(viewContext = viewContext, localContext = localContext)
+        DownloadSongForm(viewContext = viewContext, localContext = localContext)
     }
 }

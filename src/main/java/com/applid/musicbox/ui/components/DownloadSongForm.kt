@@ -22,19 +22,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun DownloadForm (
+fun DownloadSongForm (
     viewContext: ViewContext,
     localContext: Context
 ) {
     var enteredUrl by remember { mutableStateOf(TextFieldValue()) }
     var showUrlValidationError by remember { mutableStateOf(false) }
 
-    fun handleOnDownloadClick(enteredUrl: String, context: Context) {
+    fun handleOnDownloadClick(enteredUrl: String, localContext: Context) {
         if (!isValidUrl(enteredUrl)) showUrlValidationError = true
         else {
             if(showUrlValidationError) showUrlValidationError = false
-            val downloadManager = DownloaderManager(context)
-            downloadManager.downloadAudio(enteredUrl)
+            val songDownloader = SongDownloader(localContext)
+            songDownloader.download(enteredUrl)
 
         }
     }
