@@ -19,7 +19,7 @@ import com.applid.musicbox.ui.helpers.ViewContext
 import isValidUrl
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.sp
-import com.applid.musicbox.services.downloaders.SongDownloader
+import com.applid.musicbox.services.managers.DownloadManager
 
 @Composable
 fun DownloadSongForm (
@@ -33,8 +33,8 @@ fun DownloadSongForm (
         if (!isValidUrl(enteredUrl)) showUrlValidationError = true
         else {
             if(showUrlValidationError) showUrlValidationError = false
-            val songDownloader = SongDownloader(localContext, viewContext)
-            songDownloader.download(enteredUrl)
+            val downloadManager = DownloadManager(localContext)
+            downloadManager.downloadAudio(enteredUrl)
 
         }
     }

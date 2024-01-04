@@ -5,9 +5,8 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import com.applid.musicbox.services.i18n.Translations
-//TODO delete this file and the folder
 
-class DownloaderManager(private val context: Context) {
+class DownloadManager(private val context: Context) {
 
    private val downloadManager = context.getSystemService(DownloadManager::class.java)
 
