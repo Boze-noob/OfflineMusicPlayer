@@ -20,11 +20,38 @@ class DownloadManager(context: Context) {
        request.setDescription(Translations.default.inProgress)
        request.setAllowedOverRoaming(false)
 
-       val fileName = getFileNameFromUrl(url)
+       val fileName = getFileName(url)
+       
        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "musicbox/$fileName")
 
        return downloadManager.enqueue(request)
     }
 
+   //TODO check if everything is alright
+   private fun getFileName(url : String): String {
+      var fileName : String = ""
+      Bundle extras = intent.getExtras();
+      DownloadManager.Query q = new DownloadManager.Query();
+      q.setFilterById(extras.getLong(DownloadManager.EXTRA_DOWNLOAD_ID));
+      Cursor c = downloadManager.query(q);
 
+      if (c.moveToFirst()) {
+         int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
+
+         val contentDispositionIndex = cursor.getColumnIndex(DownloadManager.COLUMN_CONTENT_DISPOSITION)
+         val contentDisposition = cursor.getString(contentDispositionIndex)
+
+         if (status == DownloadManager.STATUS_SUCCESSFUL) {
+            //TODO COLUMN_LOCAL_FILENAME could be depricated, use this if it is -> COLUMN_LOCAL_URI
+             String filePath = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+             filename = filePath.substring( filePath.lastIndexOf('/') + 1, filePath.length() );
+         
+             if(fileName.isEmpty()) fileName = URLUtil.guessFileName(url, contentDisposition)
+         }
+      }
+      c.close();
+
+      return fileName
+      
+    }
 }

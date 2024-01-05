@@ -20,19 +20,3 @@ fun isValidAudioUrl(url: String): Boolean {
     )
     return pattern.matches(url)
 }
-//TODO something not alright with this function
-fun getFileNameFromUrl(url: String): String {
-    val connection = URL(url).openConnection()
-    val contentDisposition = connection.getHeaderField("Content-Disposition")
-
-    if (!contentDisposition.isNullOrBlank()) {
-        val fileNameMatcher = Regex("filename\\s*=\\s*\"([^\"]+)\"").find(contentDisposition)
-        if (fileNameMatcher != null) {
-            return fileNameMatcher.groupValues[1]
-        }
-    }
-
-    // If content disposition header is not available, extract filename from URL
-    val pathSegments = Uri.parse(url).pathSegments
-    return pathSegments.lastOrNull() ?: "audio_file" // Default filename if unable to extract from URL
-}
