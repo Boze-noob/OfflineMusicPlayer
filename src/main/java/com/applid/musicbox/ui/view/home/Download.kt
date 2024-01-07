@@ -11,7 +11,6 @@ import com.applid.musicbox.ui.helpers.ViewContext
 fun DownloadView(viewContext: ViewContext) {
     val localContext: Context = LocalContext.current
 
-
     LoaderScaffold(viewContext, isLoading = false) {
         DownloadSongForm(viewContext = viewContext, localContext = localContext)
     }

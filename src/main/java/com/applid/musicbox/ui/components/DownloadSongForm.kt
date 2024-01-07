@@ -1,5 +1,6 @@
 package com.applid.musicbox.ui.components
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,6 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.unit.sp
 import com.applid.musicbox.services.managers.DownloadManager
 import isValidAudioUrl
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun DownloadSongForm (
@@ -28,17 +30,25 @@ fun DownloadSongForm (
 ) {
     var enteredUrl by remember { mutableStateOf(TextFieldValue()) }
     var showUrlValidationError by remember { mutableStateOf(false) }
+    var downloadProgress by remember { mutableIntStateOf(0) }
 
+    @SuppressLint("SuspiciousIndentation")
     fun handleOnDownloadClick(enteredUrl: String) {
         if (!isValidAudioUrl(enteredUrl)) showUrlValidationError = true
         else {
             if(showUrlValidationError) showUrlValidationError = false
-            val downloadManager = DownloadManager(localContext)
-            downloadManager.downloadAudio(enteredUrl)
 
+            val downloadManager = DownloadManager()
+
+            runBlocking {
+                downloadManager.downloadAudio(enteredUrl, localContext) { progress ->
+                    downloadProgress = progress
+                }
+            }
         }
     }
 
+    // TODO UI blocked when the download is in progress
     MediaSortBarScaffold(
         mediaSortBar = {},
         content = {
@@ -103,6 +113,23 @@ fun DownloadSongForm (
                     )
 
                     Spacer(modifier = Modifier.height(15.dp))
+                    if(downloadProgress > 0)
+                    Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+                        Text(
+                            text = "Downloading Progress: $downloadProgress%",
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 16.sp),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        LinearProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth().height(6.dp),
+                            progress = downloadProgress.toFloat(),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(15.dp))
                     ElevatedButton(
                         colors = ButtonDefaults.buttonColors(
                             contentColor = Color.White
@@ -111,6 +138,7 @@ fun DownloadSongForm (
                         onClick = {
                             handleOnDownloadClick(enteredUrl.text)
                         },
+                        enabled = downloadProgress == 0 || downloadProgress == 100
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
