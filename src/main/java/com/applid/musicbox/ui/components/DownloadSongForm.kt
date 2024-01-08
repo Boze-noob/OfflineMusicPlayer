@@ -2,6 +2,7 @@ package com.applid.musicbox.ui.components
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.unit.sp
 import com.applid.musicbox.services.managers.DownloadManager
 import isValidAudioUrl
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 @Composable
@@ -32,23 +34,27 @@ fun DownloadSongForm (
     var showUrlValidationError by remember { mutableStateOf(false) }
     var downloadProgress by remember { mutableIntStateOf(0) }
 
-    @SuppressLint("SuspiciousIndentation")
+    val coroutineScope = rememberCoroutineScope()
+
     fun handleOnDownloadClick(enteredUrl: String) {
         if (!isValidAudioUrl(enteredUrl)) showUrlValidationError = true
         else {
-            if(showUrlValidationError) showUrlValidationError = false
+            if (showUrlValidationError) showUrlValidationError = false
 
             val downloadManager = DownloadManager()
 
-            runBlocking {
-                downloadManager.downloadAudio(enteredUrl, localContext) { progress ->
-                    downloadProgress = progress
+            coroutineScope.launch {
+                try {
+                    downloadManager.downloadAudio(enteredUrl, localContext) { progress ->
+                        downloadProgress = progress
+                    }
+                } catch (e: Exception) {
+                    //TODO show toast or snackbar
                 }
             }
         }
     }
 
-    // TODO UI blocked when the download is in progress
     MediaSortBarScaffold(
         mediaSortBar = {},
         content = {
@@ -113,7 +119,7 @@ fun DownloadSongForm (
                     )
 
                     Spacer(modifier = Modifier.height(15.dp))
-                    if(downloadProgress > 0)
+
                     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
                         Text(
                             text = "Downloading Progress: $downloadProgress%",
@@ -125,7 +131,7 @@ fun DownloadSongForm (
                         LinearProgressIndicator(
                             modifier = Modifier
                                 .fillMaxWidth().height(6.dp),
-                            progress = downloadProgress.toFloat(),
+                            progress = downloadProgress.toFloat() / 100,
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
