@@ -161,6 +161,8 @@ class English : Translations {
     override val warning = "Warning"
     override val commandAlreadyRunning = "Command already running"
     override val commandQueued = "Command queued"
+    override val unexpectedErrorHappenPleaseTryAgain = "Unexpected error happen. Please try again!"
+
 
     override fun playingXofY(x: Int, y: Int) = "Playing $x of $y"
     override fun unknownArtistX(name: String) = "Unknown artist ($name)"

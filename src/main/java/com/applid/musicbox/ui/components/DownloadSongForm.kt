@@ -49,7 +49,7 @@ fun DownloadSongForm (
                         downloadProgress = progress
                     }
                 } catch (e: Exception) {
-                    //TODO show toast or snackbar
+                    Toast.makeText(localContext, viewContext.symphony.t.unexpectedErrorHappenPleaseTryAgain, Toast.LENGTH_LONG).show()
                 }
             }
         }

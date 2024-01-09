@@ -152,6 +152,7 @@ interface Translations {
     val warning: String
     val commandAlreadyRunning: String
     val commandQueued: String
+    val unexpectedErrorHappenPleaseTryAgain: String
 
     fun XSongs(x: Int): String
     fun playingXofY(x: Int, y: Int): String
