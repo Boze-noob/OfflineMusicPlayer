@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.applid.musicbox.ui.helpers.ViewContext
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.sp
-import com.applid.musicbox.services.managers.DownloadManager
+import com.applid.musicbox.services.downloaders.AudioDownloader
 import isValidAudioUrl
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -36,16 +36,17 @@ fun DownloadSongForm (
 
     val coroutineScope = rememberCoroutineScope()
 
+    //TODO in the function below figure out if we need to call the backend in order to download audio file from provided url or if we need to call okhttp download function 
     fun handleOnDownloadClick(enteredUrl: String) {
         if (!isValidAudioUrl(enteredUrl)) showUrlValidationError = true
         else {
             if (showUrlValidationError) showUrlValidationError = false
 
-            val downloadManager = DownloadManager()
+            val audioDownloader = AudioDownloader()
 
             coroutineScope.launch {
                 try {
-                    downloadManager.downloadAudio(enteredUrl, localContext) { progress ->
+                    audioDownloader.downloadAndTrackProgress(enteredUrl, localContext) { progress ->
                         downloadProgress = progress
                     }
                 } catch (e: Exception) {

@@ -13,11 +13,13 @@ import okio.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
+import getFileName
 
-class DownloadManager {
+class AudioDownloader {
 
-    suspend fun downloadAudio(url: String, localContext : Context, progressListener: (Int) -> Unit) {
+    suspend fun downloadAndTrackProgress(url: String, localContext : Context, progressListener: (Int) -> Unit) {
         withContext(Dispatchers.IO) {
+
             val client = OkHttpClient.Builder()
                 .addNetworkInterceptor { chain ->
                     val originalResponse = chain.proceed(chain.request())
@@ -64,55 +66,7 @@ class DownloadManager {
                     outputStream.flush()
                 }
 
-                // Close the output stream
                 outputStream.close()
-            }
-        }
-    }
-
-    private fun getFileName(url: String, contentDisposition: String?, mimeType: String?): String {
-        var fileName: String = URLUtil.guessFileName(url, contentDisposition, mimeType)
-
-        if (fileName.isEmpty()) fileName = url.substringAfterLast('/')
-
-        return fileName
-    }
-}
-
-class ProgressResponseBody(
-    private val responseBody: ResponseBody,
-    private val progressListener: (Int) -> Unit
-) : ResponseBody() {
-
-    private var bufferedSource: BufferedSource? = null
-
-    override fun contentType(): MediaType? {
-        return responseBody.contentType()
-    }
-
-    override fun contentLength(): Long {
-        return responseBody.contentLength()
-    }
-
-    override fun source(): BufferedSource {
-        if (bufferedSource == null) {
-            bufferedSource = source(responseBody.source()).buffer()
-        }
-        return bufferedSource!!
-    }
-
-    private fun source(source: Source): Source {
-        return object : ForwardingSource(source) {
-            var totalBytesRead = 0L
-
-            override fun read(sink: Buffer, byteCount: Long): Long {
-                val bytesRead = super.read(sink, byteCount)
-                if (bytesRead != -1L) {
-                    totalBytesRead += bytesRead
-                    val progress = ((totalBytesRead * 100) / responseBody.contentLength()).toInt()
-                    progressListener(progress)
-                }
-                return bytesRead
             }
         }
     }
