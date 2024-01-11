@@ -47,7 +47,7 @@ fun DownloadSongForm (
 
                     val audioDownloader = AudioDownloader()
 
-                    audioDownloader.downloadAndTrackProgress(enteredUrl, localContext) { progress ->
+                    audioDownloader.downloadAndTrackProgress(enteredUrl) { progress ->
                         downloadProgress = progress
                     }
                     } else {
