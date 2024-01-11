@@ -24,8 +24,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.applid.musicbox.ads.HOME_INTERSTITIAL_AD_UNIT
 import com.applid.musicbox.ads.InterstitialAdHelper
-import com.applid.musicbox.data.GooglePlayUrl
-import com.applid.musicbox.data.GooglePlayUrlWeb
+import com.applid.musicbox.data.GOOGLE_PLAY_URL
+import com.applid.musicbox.data.GOOGLE_PLAY_URL_WEB
 import com.applid.musicbox.ui.components.NowPlayingBottomBar
 import com.applid.musicbox.ui.components.RateUsDialog
 import com.applid.musicbox.ui.components.TopAppBarMinimalTitle
@@ -277,9 +277,9 @@ fun HomeView(context: ViewContext) {
                     showRateUs = false
                     if(it) {
                         try {
-                            uriHandler.openUri(GooglePlayUrl)
+                            uriHandler.openUri(GOOGLE_PLAY_URL)
                         } catch (e: ActivityNotFoundException) {
-                            uriHandler.openUri(GooglePlayUrlWeb)
+                            uriHandler.openUri(GOOGLE_PLAY_URL_WEB)
                         }
                         context.symphony.settings.setRateUs(true)
                     }

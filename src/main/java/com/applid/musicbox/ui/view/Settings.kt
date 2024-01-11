@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import com.applid.musicbox.data.ContactMail
-import com.applid.musicbox.data.OurMarketPlaceUrl
+import com.applid.musicbox.data.CONTACT_MAIL
+import com.applid.musicbox.data.OUR_MARKET_PLACE_URL
 import com.applid.musicbox.services.SettingsDataDefaults
 import com.applid.musicbox.services.ThemeMode
 import com.applid.musicbox.services.i18n.Translations
@@ -455,14 +455,14 @@ fun SettingsView(context: ViewContext) {
                         title = { Text(context.symphony.t.otherApps) },
                         onClick = {
 
-                            uriHandler.openUri(OurMarketPlaceUrl)
+                            uriHandler.openUri(OUR_MARKET_PLACE_URL)
                         }
                     )
                     SettingsSimpleTile(
                         icon = { Icon(Icons.Default.ContactMail, null) },
                         title = { Text(context.symphony.t.contactUs) },
                         onClick = {
-                            contactUs(localContext, ContactMail, "MusicBox")
+                            contactUs(localContext, CONTACT_MAIL, "MusicBox")
                         })
                 }
             }

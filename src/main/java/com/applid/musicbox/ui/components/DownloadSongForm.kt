@@ -22,8 +22,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.unit.sp
 import com.applid.musicbox.services.downloaders.AudioDownloader
 import isValidAudioUrl
+import isYoutubeUrl
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import fetchYtAudioData
 
 @Composable
 fun DownloadSongForm (
@@ -42,13 +44,22 @@ fun DownloadSongForm (
         else {
             if (showUrlValidationError) showUrlValidationError = false
 
-            val audioDownloader = AudioDownloader()
+            
 
             coroutineScope.launch {
                 try {
+                    if(isYoutubeUrl(enteredUrl)) {
+
+                    val audioDownloader = AudioDownloader()
+
                     audioDownloader.downloadAndTrackProgress(enteredUrl, localContext) { progress ->
                         downloadProgress = progress
                     }
+                    } else {
+                        val response : boolean = fetchYtAudioData(localContext)
+                        //TODO decide what to do next, if successful show some message and include new song to the songs list, if not show some message
+                    }
+
                 } catch (e: Exception) {
                     Toast.makeText(localContext, viewContext.symphony.t.unexpectedErrorHappenPleaseTryAgain, Toast.LENGTH_LONG).show()
                 }
