@@ -1,6 +1,5 @@
 package com.applid.musicbox.ui.components
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -24,7 +23,6 @@ import com.applid.musicbox.services.downloaders.AudioDownloader
 import isValidAudioUrl
 import isYoutubeUrl
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import fetchYtAudioData
 
 @Composable
@@ -38,13 +36,10 @@ fun DownloadSongForm (
 
     val coroutineScope = rememberCoroutineScope()
 
-    //TODO in the function below figure out if we need to call the backend in order to download audio file from provided url or if we need to call okhttp download function 
     fun handleOnDownloadClick(enteredUrl: String) {
         if (!isValidAudioUrl(enteredUrl)) showUrlValidationError = true
         else {
             if (showUrlValidationError) showUrlValidationError = false
-
-            
 
             coroutineScope.launch {
                 try {
@@ -56,10 +51,9 @@ fun DownloadSongForm (
                         downloadProgress = progress
                     }
                     } else {
-                        val response : boolean = fetchYtAudioData(localContext)
+                        val response : Boolean = fetchYtAudioData(localContext)
                         //TODO decide what to do next, if successful show some message and include new song to the songs list, if not show some message
                     }
-
                 } catch (e: Exception) {
                     Toast.makeText(localContext, viewContext.symphony.t.unexpectedErrorHappenPleaseTryAgain, Toast.LENGTH_LONG).show()
                 }

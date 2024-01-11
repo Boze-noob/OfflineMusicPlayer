@@ -1,4 +1,7 @@
-//TODO add needed imports
+import okhttp3.MediaType
+import okhttp3.ResponseBody
+import okio.BufferedSource
+import okio.*
 class ProgressResponseBody(
     private val responseBody: ResponseBody,
     private val progressListener: (Int) -> Unit

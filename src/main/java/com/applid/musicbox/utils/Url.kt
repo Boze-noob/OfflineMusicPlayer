@@ -1,6 +1,3 @@
-import android.net.Uri
-import java.net.URL
-
 fun isValidUrl(url: String): Boolean {
     val pattern = Regex(
         "^(https?|ftp):\\/\\/" +
@@ -21,6 +18,6 @@ fun isValidAudioUrl(url: String): Boolean {
     return pattern.matches(url)
 }
 
-private fun isYoutubeUrl(url: String): Boolean {
+fun isYoutubeUrl(url: String): Boolean {
     return url.contains("youtube.com") || url.contains("youtu.be")
 }

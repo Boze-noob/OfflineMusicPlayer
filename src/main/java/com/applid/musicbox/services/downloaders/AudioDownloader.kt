@@ -1,11 +1,10 @@
-package com.applid.musicbox.services.managers
+package com.applid.musicbox.services.downloaders
 
+import ProgressResponseBody
 import android.content.Context
 import android.os.Environment
-import android.webkit.URLUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.ResponseBody
@@ -17,7 +16,7 @@ import getFileName
 
 class AudioDownloader {
 
-    suspend fun downloadAndTrackProgress(url: String, localContext : Context, progressListener: (Int) -> Unit) {
+    suspend fun downloadAndTrackProgress(url: String, progressListener: (Int) -> Unit) {
         withContext(Dispatchers.IO) {
 
             val client = OkHttpClient.Builder()

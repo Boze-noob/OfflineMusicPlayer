@@ -3,8 +3,8 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import java.io.File
 
-class HttpClient {
-    private fun create(context: Context, enableCaching: Boolean = false): OkHttpClient {
+object HttpClient {
+     fun create(context: Context, enableCaching: Boolean = false): OkHttpClient {
         val builder = OkHttpClient.Builder()
 
         if (enableCaching) {
