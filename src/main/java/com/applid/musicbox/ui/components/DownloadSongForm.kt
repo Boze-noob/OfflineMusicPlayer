@@ -51,8 +51,17 @@ fun DownloadSongForm (
                         downloadProgress = progress
                     }
                     } else {
-                        val response : Boolean = fetchYtAudioData(localContext)
-                        //TODO decide what to do next, if successful show some message and include new song to the songs list, if not show some message
+                        private val songsApi = SongsApi()
+                        songsApi.fetchYtAudioData(context, enteredUrl) { success ->
+                        runOnUiThread {
+                    if (success) {
+                        Toast.makeText(localContext, "Audio downloaded successfully!", Toast.LENGTH_SHORT).show()
+                        // TODO add song to the list of songs
+                    } else {
+                        Toast.makeText(localContext, "Download Failed. Please try again later!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
                     }
                 } catch (e: Exception) {
                     Toast.makeText(localContext, viewContext.symphony.t.unexpectedErrorHappenPleaseTryAgain, Toast.LENGTH_LONG).show()
