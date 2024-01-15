@@ -1,5 +1,6 @@
 package com.applid.musicbox.ui.components
 
+import SongsApi
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -22,8 +23,9 @@ import androidx.compose.ui.unit.sp
 import com.applid.musicbox.services.downloaders.AudioDownloader
 import isValidAudioUrl
 import isYoutubeUrl
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import fetchYtAudioData
 
 @Composable
 fun DownloadSongForm (
@@ -37,34 +39,35 @@ fun DownloadSongForm (
     val coroutineScope = rememberCoroutineScope()
 
     fun handleOnDownloadClick(enteredUrl: String) {
-        if (!isValidAudioUrl(enteredUrl)) showUrlValidationError = true
+        if (!isValidAudioUrl(enteredUrl) && !isYoutubeUrl(enteredUrl)) showUrlValidationError = true
         else {
             if (showUrlValidationError) showUrlValidationError = false
 
             coroutineScope.launch {
                 try {
-                    if(isYoutubeUrl(enteredUrl)) {
+                    if (!isYoutubeUrl(enteredUrl)) {
+                        val audioDownloader = AudioDownloader()
 
-                    val audioDownloader = AudioDownloader()
-
-                    audioDownloader.downloadAndTrackProgress(enteredUrl) { progress ->
-                        downloadProgress = progress
-                    }
+                        audioDownloader.downloadAndTrackProgress(enteredUrl) { progress ->
+                            downloadProgress = progress
+                        }
                     } else {
-                        private val songsApi = SongsApi()
-                        songsApi.fetchYtAudioData(context, enteredUrl) { success ->
-                        runOnUiThread {
-                    if (success) {
-                        Toast.makeText(localContext, "Audio downloaded successfully!", Toast.LENGTH_SHORT).show()
-                        // TODO add song to the list of songs
-                    } else {
-                        Toast.makeText(localContext, "Download Failed. Please try again later!", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
+                        val songsApi = SongsApi()
+                        songsApi.fetchYtAudioData(localContext, enteredUrl) { success ->
+                            GlobalScope.launch(Dispatchers.Main) {
+                                if (success) {
+                                    Toast.makeText(localContext, "Audio downloaded successfully!", Toast.LENGTH_SHORT).show()
+                                    // TODO: add song to the list of songs
+                                } else {
+                                    Toast.makeText(localContext, "Download Failed. Please try again later!", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
                     }
                 } catch (e: Exception) {
-                    Toast.makeText(localContext, viewContext.symphony.t.unexpectedErrorHappenPleaseTryAgain, Toast.LENGTH_LONG).show()
+                    GlobalScope.launch(Dispatchers.Main) {
+                        Toast.makeText(localContext, viewContext.symphony.t.unexpectedErrorHappenPleaseTryAgain, Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }

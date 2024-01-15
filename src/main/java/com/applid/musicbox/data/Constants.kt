@@ -5,4 +5,4 @@ const val GOOGLE_PLAY_URL_WEB = "https://play.google.com/store/apps/details?id=c
 const val OUR_MARKET_PLACE_URL = "https://play.google.com/store/apps/developer?id=appLid&hl=en&gl=US"
 const val CONTACT_MAIL = "applid2021@gmail.com"
 //TODO add api base url here
-const val BASE_URL = "" 
+const val BASE_URL = "http://127.0.0.1:8000/"
