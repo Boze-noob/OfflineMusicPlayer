@@ -1,10 +1,13 @@
 import android.content.Context
+import android.os.Environment
 import android.util.Log
 import okhttp3.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import com.applid.musicbox.data.BASE_URL
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 
 object Endpoints {
     const val DOWNLOAD_YT_AUDIO_ENDPOINT = "download_yt_audio"
@@ -17,9 +20,13 @@ class SongsApi {
         val httpClient = HttpClient.create(context)
         val url = "$BASE_URL/${Endpoints.DOWNLOAD_YT_AUDIO_ENDPOINT}"
 
-        val requestBody = FormBody.Builder()
-            .add("url", youtubeUrl)
-            .build()
+    val json = """
+    {
+        "url": "$youtubeUrl"
+    }
+    """.trimIndent()
+
+    val requestBody = json.toRequestBody("application/json".toMediaTypeOrNull())
 
         val request = Request.Builder()
             .url(url)
@@ -35,7 +42,7 @@ class SongsApi {
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
                     var outputStream: FileOutputStream? = null
-                    val file = File(context.cacheDir, "audio.mp3")
+                    val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path, "audio.mp3")
 
                     try {
                         outputStream = FileOutputStream(file)
@@ -59,6 +66,8 @@ class SongsApi {
                         }
                     }
                 } else {
+                    Log.e("Response Error", response.code.toString())
+                    Log.e("Response Body", response.body.string() ?: "Empty Body")
                     callback(false)
                 }
             }
