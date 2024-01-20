@@ -162,6 +162,9 @@ class English : Translations {
     override val commandAlreadyRunning = "Command already running"
     override val commandQueued = "Command queued"
     override val unexpectedErrorHappenPleaseTryAgain = "Unexpected error happen. Please try again!"
+    override val downloadFailedTryAgain = "Download Failed. Please try again later!"
+    override val downloadingProgress = "Downloading Progress"
+    override val audioDownloadedSuccessfully = "Audio downloaded successfully"
 
 
     override fun playingXofY(x: Int, y: Int) = "Playing $x of $y"

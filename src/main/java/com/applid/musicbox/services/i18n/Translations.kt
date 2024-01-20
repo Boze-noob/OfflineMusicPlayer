@@ -153,6 +153,9 @@ interface Translations {
     val commandAlreadyRunning: String
     val commandQueued: String
     val unexpectedErrorHappenPleaseTryAgain: String
+    val downloadFailedTryAgain: String
+    val downloadingProgress: String
+    val audioDownloadedSuccessfully: String
 
     fun XSongs(x: Int): String
     fun playingXofY(x: Int, y: Int): String

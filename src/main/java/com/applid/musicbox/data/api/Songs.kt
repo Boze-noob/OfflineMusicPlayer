@@ -15,7 +15,6 @@ object Endpoints {
 }
 
 class SongsApi {
-//TODO check if works properly
     fun fetchYtAudioData(context: Context, youtubeUrl: String, callback: (Boolean) -> Unit) {
         val httpClient = HttpClient.create(context)
         val url = "$BASE_URL/${Endpoints.DOWNLOAD_YT_AUDIO_ENDPOINT}"
@@ -41,16 +40,25 @@ class SongsApi {
 
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
+                    val contentDispositionHeader = response.header("Content-Disposition")
+                    val title = extractTitleFromContentDisposition(contentDispositionHeader)
+
                     var outputStream: FileOutputStream? = null
-                    val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path, "audio.mp3")
+                    val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path, "${title}.mp3")
 
                     try {
                         outputStream = FileOutputStream(file)
+                        val totalFileSize = response.body.contentLength()
+                        var fileSizeDownloaded: Long = 0
+
                         response.body.byteStream().use { input ->
                             val buffer = ByteArray(4 * 1024)
                             var read: Int
                             while (input.read(buffer).also { read = it } != -1) {
+                                fileSizeDownloaded += read.toLong()
                                 outputStream.write(buffer, 0, read)
+                                val progress = (fileSizeDownloaded * 100 / totalFileSize).toInt()
+                                Log.d("yt_progress", progress.toString());
                             }
                             outputStream.flush()
                         }
@@ -67,10 +75,16 @@ class SongsApi {
                     }
                 } else {
                     Log.e("Response Error", response.code.toString())
-                    Log.e("Response Body", response.body.string() ?: "Empty Body")
+                    Log.e("Response Body", response.body.string())
                     callback(false)
                 }
             }
         })
     }
+}
+
+private fun extractTitleFromContentDisposition(contentDisposition: String?): String {
+    val regex = Regex("filename=\"(.*?)\"")
+    val matchResult = regex.find(contentDisposition ?: "") ?: return "audio"
+    return matchResult.groupValues[1]
 }

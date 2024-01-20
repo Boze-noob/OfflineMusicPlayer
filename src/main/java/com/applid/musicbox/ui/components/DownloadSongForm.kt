@@ -2,6 +2,7 @@ package com.applid.musicbox.ui.components
 
 import SongsApi
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+
 @Composable
 fun DownloadSongForm (
     viewContext: ViewContext,
@@ -38,38 +40,47 @@ fun DownloadSongForm (
 
     val coroutineScope = rememberCoroutineScope()
 
-    fun handleOnDownloadClick(enteredUrl: String) {
-        if (!isValidAudioUrl(enteredUrl) && !isYoutubeUrl(enteredUrl)) showUrlValidationError = true
-        else {
-            if (showUrlValidationError) showUrlValidationError = false
+    val audioDownloadedSuccessfullyTxt =  viewContext.symphony.t.audioDownloadedSuccessfully
 
-            coroutineScope.launch {
-                try {
-                    if (!isYoutubeUrl(enteredUrl)) {
-                        val audioDownloader = AudioDownloader()
+    fun download() {
+        coroutineScope.launch {
+            try {
+                if (!isYoutubeUrl(enteredUrl.text)) {
+                    val audioDownloader = AudioDownloader()
 
-                        audioDownloader.downloadAndTrackProgress(enteredUrl) { progress ->
-                            downloadProgress = progress
-                        }
-                    } else {
-                        val songsApi = SongsApi()
-                        songsApi.fetchYtAudioData(localContext, enteredUrl) { success ->
-                            GlobalScope.launch(Dispatchers.Main) {
-                                if (success) {
-                                    Toast.makeText(localContext, "Audio downloaded successfully!", Toast.LENGTH_SHORT).show()
-                                    // TODO: add song to the list of songs
-                                } else {
-                                    Toast.makeText(localContext, "Download Failed. Please try again later!", Toast.LENGTH_SHORT).show()
-                                }
+                    audioDownloader.downloadAndTrackProgress(enteredUrl.text) { progress ->
+                        downloadProgress = progress
+                        if(progress == 100)  showSuccessfulDownloadToast(localContext, audioDownloadedSuccessfullyTxt )
+                    }
+                } else {
+                    downloadProgress = 50
+                    val songsApi = SongsApi()
+                    songsApi.fetchYtAudioData(localContext, enteredUrl.text) { success ->
+                        GlobalScope.launch(Dispatchers.Main) {
+                            if (success) {
+                                downloadProgress = 100
+                                showSuccessfulDownloadToast(localContext, audioDownloadedSuccessfullyTxt )
+                                // TODO: add song to the list of songs
+                            } else {
+                                Toast.makeText(localContext, viewContext.symphony.t.downloadFailedTryAgain, Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
-                } catch (e: Exception) {
-                    GlobalScope.launch(Dispatchers.Main) {
-                        Toast.makeText(localContext, viewContext.symphony.t.unexpectedErrorHappenPleaseTryAgain, Toast.LENGTH_LONG).show()
-                    }
+                }
+            } catch (e: Exception) {
+                Log.e("HandleOnDownloadClickError", e.message ?: "Unknown Error!")
+                GlobalScope.launch(Dispatchers.Main) {
+                    Toast.makeText(localContext, viewContext.symphony.t.unexpectedErrorHappenPleaseTryAgain, Toast.LENGTH_LONG).show()
                 }
             }
+        }
+    }
+
+     fun handleOnDownloadClick() {
+        if (!isValidAudioUrl(enteredUrl.text) && !isYoutubeUrl(enteredUrl.text)) showUrlValidationError = true
+        else {
+            if (showUrlValidationError) showUrlValidationError = false
+            download()
         }
     }
 
@@ -101,7 +112,7 @@ fun DownloadSongForm (
                         value = enteredUrl,
                         onValueChange = {
                             enteredUrl = it
-                            showUrlValidationError = false // Reset error state on input change
+                            showUrlValidationError = false
                         },
                         label = { Text(viewContext.symphony.t.pasteUrl) },
                         placeholder = { Text("https://example.com") },
@@ -140,7 +151,7 @@ fun DownloadSongForm (
 
                     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
                         Text(
-                            text = "Downloading Progress: $downloadProgress%",
+                            text = "${viewContext.symphony.t.downloadingProgress}: $downloadProgress%",
                             style = MaterialTheme.typography.bodySmall.copy(fontSize = 16.sp),
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                             modifier = Modifier.fillMaxWidth()
@@ -160,7 +171,7 @@ fun DownloadSongForm (
                         ),
                         shape = RoundedCornerShape(10.dp),
                         onClick = {
-                            handleOnDownloadClick(enteredUrl.text)
+                            handleOnDownloadClick()
                         },
                         enabled = downloadProgress == 0 || downloadProgress == 100
                     ) {
@@ -183,4 +194,8 @@ fun DownloadSongForm (
             }
         }
     )
+}
+
+private fun showSuccessfulDownloadToast(context: Context, message: String) {
+    Toast.makeText(context, "${message}!", Toast.LENGTH_SHORT).show()
 }
