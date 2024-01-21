@@ -15,7 +15,7 @@ object Endpoints {
 }
 
 class SongsApi {
-    fun fetchYtAudioData(context: Context, youtubeUrl: String, callback: (Boolean) -> Unit) {
+    fun fetchYtAudioData(context: Context, youtubeUrl: String, successCallback: (Boolean) -> Unit,  progressCallback: (Int) -> Unit) {
         val httpClient = HttpClient.create(context)
         val url = "$BASE_URL/${Endpoints.DOWNLOAD_YT_AUDIO_ENDPOINT}"
 
@@ -35,36 +35,40 @@ class SongsApi {
         httpClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 Log.e("IOException", e.message ?: "IOException")
-                callback(false)
+                successCallback(false)
             }
 
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
                     val contentDispositionHeader = response.header("Content-Disposition")
+                    val totalFileSize = response.header("Content-Length")?.toLong() ?: -1
                     val title = extractTitleFromContentDisposition(contentDispositionHeader)
 
                     var outputStream: FileOutputStream? = null
-                    val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path, "${title}.mp3")
+                    val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path,
+                        title
+                    )
 
                     try {
                         outputStream = FileOutputStream(file)
-                        val totalFileSize = response.body.contentLength()
-                        var fileSizeDownloaded: Long = 0
 
                         response.body.byteStream().use { input ->
                             val buffer = ByteArray(4 * 1024)
                             var read: Int
+                            var fileSizeDownloaded: Long = 0
+
                             while (input.read(buffer).also { read = it } != -1) {
-                                fileSizeDownloaded += read.toLong()
                                 outputStream.write(buffer, 0, read)
-                                val progress = (fileSizeDownloaded * 100 / totalFileSize).toInt()
-                                Log.d("yt_progress", progress.toString());
+
+                                fileSizeDownloaded += read.toLong()
+
+                                progressCallback(((fileSizeDownloaded * 100) / totalFileSize).toInt())
                             }
                             outputStream.flush()
                         }
-                        callback(true)
+                        successCallback(true)
                     } catch (e: IOException) {
-                        callback(false)
+                        successCallback(false)
                         Log.e("IOException", e.message ?: "IOException")
                     } finally {
                         try {
@@ -76,7 +80,7 @@ class SongsApi {
                 } else {
                     Log.e("Response Error", response.code.toString())
                     Log.e("Response Body", response.body.string())
-                    callback(false)
+                    successCallback(false)
                 }
             }
         })

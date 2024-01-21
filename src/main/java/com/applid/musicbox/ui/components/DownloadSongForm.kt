@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import com.applid.musicbox.ui.helpers.ViewContext
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.sp
+import com.applid.musicbox.ads.BannerAdView
+import com.applid.musicbox.ads.DOWNLOAD_SONG_BANNER_AD_UNIT
 import com.applid.musicbox.services.downloaders.AudioDownloader
 import isValidAudioUrl
 import isYoutubeUrl
@@ -53,19 +55,21 @@ fun DownloadSongForm (
                         if(progress == 100)  showSuccessfulDownloadToast(localContext, audioDownloadedSuccessfullyTxt )
                     }
                 } else {
-                    downloadProgress = 50
+
                     val songsApi = SongsApi()
-                    songsApi.fetchYtAudioData(localContext, enteredUrl.text) { success ->
-                        GlobalScope.launch(Dispatchers.Main) {
-                            if (success) {
-                                downloadProgress = 100
-                                showSuccessfulDownloadToast(localContext, audioDownloadedSuccessfullyTxt )
-                                // TODO: add song to the list of songs
-                            } else {
-                                Toast.makeText(localContext, viewContext.symphony.t.downloadFailedTryAgain, Toast.LENGTH_SHORT).show()
-                            }
+                    songsApi.fetchYtAudioData(localContext, enteredUrl.text, {
+                            isSuccessful -> GlobalScope.launch(Dispatchers.Main) {
+                        if (isSuccessful) {
+                            showSuccessfulDownloadToast(localContext, audioDownloadedSuccessfullyTxt )
+                            // TODO: add song to the list of songs
+                        } else {
+                            Toast.makeText(localContext, viewContext.symphony.t.downloadFailedTryAgain, Toast.LENGTH_SHORT).show()
                         }
                     }
+                    }, {
+                        progress -> downloadProgress = progress
+
+                    })
                 }
             } catch (e: Exception) {
                 Log.e("HandleOnDownloadClickError", e.message ?: "Unknown Error!")
@@ -159,7 +163,8 @@ fun DownloadSongForm (
                         Spacer(modifier = Modifier.height(2.dp))
                         LinearProgressIndicator(
                             modifier = Modifier
-                                .fillMaxWidth().height(6.dp),
+                                .fillMaxWidth()
+                                .height(6.dp),
                             progress = downloadProgress.toFloat() / 100,
                             color = MaterialTheme.colorScheme.primary
                         )
@@ -190,6 +195,10 @@ fun DownloadSongForm (
                             )
                         }
                     }
+                    Spacer(modifier = Modifier.weight(1f))
+                    BannerAdView(adUnitId = DOWNLOAD_SONG_BANNER_AD_UNIT)
+                    
+
                 }
             }
         }
