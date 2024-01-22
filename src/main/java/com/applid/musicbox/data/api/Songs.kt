@@ -5,7 +5,6 @@ import okhttp3.*
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import com.applid.musicbox.data.BASE_URL
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 
@@ -13,6 +12,9 @@ object Endpoints {
     const val DOWNLOAD_YT_AUDIO_ENDPOINT = "download_yt_audio"
     // Add more endpoints as needed
 }
+
+val BASE_URL = BuildConfig.BASE_URL
+val SECRET_KEY = BuildConfig.CLIENT_SECRET_KEY
 
 class SongsApi {
     fun fetchYtAudioData(context: Context, youtubeUrl: String, isSuccessfulCallback: (Boolean) -> Unit,  progressCallback: (Int) -> Unit) {
@@ -29,8 +31,8 @@ class SongsApi {
 
         val request = Request.Builder()
             .url(url)
-            //TODO add secret key here
-            .header("Authorization", "secret-key")
+            //TODO if it is alright
+            .header("Authorization", SECRET_KEY)
             .post(requestBody)
             .build()
 

@@ -196,8 +196,6 @@ fun DownloadSongForm (
                     }
                     Spacer(modifier = Modifier.weight(1f))
                     BannerAdView(adUnitId = DOWNLOAD_SONG_BANNER_AD_UNIT)
-                    
-
                 }
             }
         }

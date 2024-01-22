@@ -74,6 +74,7 @@ class SongRepository(private val symphony: Symphony) {
                 val nAdditionalMetadata = mutableMapOf<Long, SongCache.Attributes>()
 
                 while (it.moveToNext()) {
+                    //TODO we are fetching the cached songs from here probably
                     kotlin
                         .runCatching {
                             Song.fromCursor(symphony, it) { id ->
