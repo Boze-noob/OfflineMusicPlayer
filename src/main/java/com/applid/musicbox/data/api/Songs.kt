@@ -15,7 +15,7 @@ object Endpoints {
 }
 
 class SongsApi {
-    fun fetchYtAudioData(context: Context, youtubeUrl: String, successCallback: (Boolean) -> Unit,  progressCallback: (Int) -> Unit) {
+    fun fetchYtAudioData(context: Context, youtubeUrl: String, isSuccessfulCallback: (Boolean) -> Unit,  progressCallback: (Int) -> Unit) {
         val httpClient = HttpClient.create(context)
         val url = "$BASE_URL/${Endpoints.DOWNLOAD_YT_AUDIO_ENDPOINT}"
 
@@ -29,13 +29,15 @@ class SongsApi {
 
         val request = Request.Builder()
             .url(url)
+            //TODO add secret key here
+            .header("Authorization", "secret-key")
             .post(requestBody)
             .build()
 
         httpClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 Log.e("IOException", e.message ?: "IOException")
-                successCallback(false)
+                isSuccessfulCallback(false)
             }
 
             override fun onResponse(call: Call, response: Response) {
@@ -66,9 +68,9 @@ class SongsApi {
                             }
                             outputStream.flush()
                         }
-                        successCallback(true)
+                        isSuccessfulCallback(true)
                     } catch (e: IOException) {
-                        successCallback(false)
+                        isSuccessfulCallback(false)
                         Log.e("IOException", e.message ?: "IOException")
                     } finally {
                         try {
@@ -80,7 +82,7 @@ class SongsApi {
                 } else {
                     Log.e("Response Error", response.code.toString())
                     Log.e("Response Body", response.body.string())
-                    successCallback(false)
+                    isSuccessfulCallback(false)
                 }
             }
         })

@@ -55,7 +55,6 @@ fun DownloadSongForm (
                         if(progress == 100)  showSuccessfulDownloadToast(localContext, audioDownloadedSuccessfullyTxt )
                     }
                 } else {
-
                     val songsApi = SongsApi()
                     songsApi.fetchYtAudioData(localContext, enteredUrl.text, {
                             isSuccessful -> GlobalScope.launch(Dispatchers.Main) {
@@ -72,7 +71,7 @@ fun DownloadSongForm (
                     })
                 }
             } catch (e: Exception) {
-                Log.e("HandleOnDownloadClickError", e.message ?: "Unknown Error!")
+                Log.e("DownloadSongException", e.message ?: "Unknown Error!")
                 GlobalScope.launch(Dispatchers.Main) {
                     Toast.makeText(localContext, viewContext.symphony.t.unexpectedErrorHappenPleaseTryAgain, Toast.LENGTH_LONG).show()
                 }
@@ -119,7 +118,7 @@ fun DownloadSongForm (
                             showUrlValidationError = false
                         },
                         label = { Text(viewContext.symphony.t.pasteUrl) },
-                        placeholder = { Text("https://example.com") },
+                        placeholder = { Text("https://example.mp3") },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Uri
                         ),
