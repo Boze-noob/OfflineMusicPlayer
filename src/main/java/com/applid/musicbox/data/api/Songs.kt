@@ -1,6 +1,8 @@
+package com.applid.musicbox.data.api
 import android.content.Context
 import android.os.Environment
 import android.util.Log
+import com.applid.musicbox.BuildConfig
 import okhttp3.*
 import java.io.File
 import java.io.FileOutputStream
@@ -31,7 +33,6 @@ class SongsApi {
 
         val request = Request.Builder()
             .url(url)
-            //TODO if it is alright
             .header("Authorization", SECRET_KEY)
             .post(requestBody)
             .build()

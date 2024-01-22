@@ -1,6 +1,6 @@
 package com.applid.musicbox.ui.components
 
-import SongsApi
+
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -23,6 +23,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.unit.sp
 import com.applid.musicbox.ads.BannerAdView
 import com.applid.musicbox.ads.DOWNLOAD_SONG_BANNER_AD_UNIT
+import com.applid.musicbox.data.api.SongsApi
 import com.applid.musicbox.services.downloaders.AudioDownloader
 import isValidAudioUrl
 import isYoutubeUrl

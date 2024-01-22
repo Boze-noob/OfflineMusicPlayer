@@ -7,6 +7,10 @@ android {
     namespace 'com.applid.musicbox'
     compileSdk 34
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId "com.applid.musicbox"
         minSdk 28
@@ -24,13 +28,15 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8000\"")
+            buildConfigField("String", "CLIENT_SECRET_KEY", "\"Test\"")
+        }
+        debug {
+            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8000\"")
+            buildConfigField("String", "CLIENT_SECRET_KEY", "\"Test\"")
         }
     }
-    buildTypes.all {
-        buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8000\"")
-        //TODO add secret key here
-        buildConfigField("String", "CLIENT_SECRET_KEY", "\"SECRET_KEY\"")
-    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
