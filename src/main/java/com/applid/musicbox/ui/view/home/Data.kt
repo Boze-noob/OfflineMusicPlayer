@@ -63,7 +63,7 @@ class HomeViewData(val symphony: Symphony) {
         updateGenresState()
         updatePlaylistsState()
     }
-
+//TODO maybe we can update the playlist from here
     private fun updateSongsState() {
         songsIsUpdating = symphony.groove.song.isUpdating
         songs.swap(symphony.groove.song.getAll())

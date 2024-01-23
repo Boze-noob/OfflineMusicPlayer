@@ -76,7 +76,7 @@ data class Song(
                 bitsPerSample = attributes.bitsPerSample,
                 samplingRate = attributes.samplingRate,
             )
-
+            //TODO check where we use this and can it be used to fetch songs
             fun fetch(symphony: Symphony, id: Long): AdditionalMetadata {
                 var albumArtist: String? = null
                 var bitrate: Int? = null
