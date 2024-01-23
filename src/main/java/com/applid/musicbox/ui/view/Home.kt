@@ -105,7 +105,7 @@ fun HomeView(context: ViewContext) {
         )
     }
 
-    var isAdLoadingOrShown  by remember {
+    var isAdLoading by remember {
         mutableStateOf(
             false
         )
@@ -253,11 +253,11 @@ fun HomeView(context: ViewContext) {
                             onClick = {
                                 currentPage = page
                                 context.symphony.settings.setHomeLastTab(currentPage)
-                                if(!isAdLoadingOrShown && !showRateUs && (0..10).random() < 5) {
-                                    isAdLoadingOrShown = true
+                                if(!isAdLoading && !showRateUs && (0..10).random() < 5) {
+                                    isAdLoading = true
 
                                     InterstitialAdHelper().get(currentContext, HOME_INTERSTITIAL_AD_UNIT) {
-                                        isAdLoadingOrShown = false
+                                        isAdLoading = false
                                         it?.show(currentContext as Activity)
                                     }
                                 }
