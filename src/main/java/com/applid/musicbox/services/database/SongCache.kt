@@ -61,7 +61,7 @@ class SongCache(val symphony: Symphony) {
             .get(symphony.applicationContext.cacheDir.absolutePath, "song_cache.json")
             .toFile()
     )
-
+//TODO check this out also
     fun read(): Map<Long, Attributes> {
         val content = adapter.read()
         val output = mutableMapOf<Long, Attributes>()
