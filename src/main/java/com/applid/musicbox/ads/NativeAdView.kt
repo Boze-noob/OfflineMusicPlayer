@@ -25,7 +25,37 @@ import coil.compose.rememberAsyncImagePainter
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdOptions.ADCHOICES_TOP_RIGHT
 
+@Composable
+fun NativeAdView(adUnitId: String, context: Context) {
+     AndroidViewBinding(factory = NativeAdView::inflate) {
+        //TODO fix this down below
+        val adView = root.also { adView ->
+            adView.headlineView = adHeadline
+            adView.iconView = adAppIcon
+            
+        }
+        // Request Ad
+        //TODO add native ad key below
+        val adLoader = AdLoader.Builder(adView.context, "NATIVE_AD_KEY")
+            .forNativeAd { nativeAd ->               
+                nativeAd.headline?.let { headline ->
+                    adHeadline.text = headline
+                }
+
+                nativeAd.icon?.let { icon ->
+                    adAppIcon.setImageDrawable(icon.drawable)
+                }
+
+                adView.setNativeAd(nativeAd)
+            })
+            .withNativeAdOptions(NativeAdOptions.Builder().build())
+            .build()
+        adLoader.loadAd(AdRequest.Builder().build())
+    }
+}
+
 //TODO SHOULD BE FIXED
+/*
 @Composable
 fun NativeAdView(adUnitId: String, context: Context) {
     //TODO try this -> AndroidViewBinding(factory = LayoutNativeAdBinding::inflate) {
@@ -180,3 +210,4 @@ sealed class AdViewState {
     ) : AdViewState()
     data class Error(val error: LoadAdError) : AdViewState()
 }
+ */
