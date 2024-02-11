@@ -76,7 +76,6 @@ data class Song(
                 bitsPerSample = attributes.bitsPerSample,
                 samplingRate = attributes.samplingRate,
             )
-            //TODO check where we use this and can it be used to fetch songs
             fun fetch(symphony: Symphony, id: Long): AdditionalMetadata {
                 var albumArtist: String? = null
                 var bitrate: Int? = null
@@ -174,6 +173,7 @@ data class Song(
                 path = cursor.getColumnValue(AudioColumns.DATA) {
                     cursor.getString(it)
                 },
+                //TODO this is where we decide to use cached songs or from folders
                 additional = fetchCachedAttributes(id)
                     ?.takeIf { it.lastModified == dateModified }
                     ?.runCatching { AdditionalMetadata.fromSongCacheAttributes(this) }

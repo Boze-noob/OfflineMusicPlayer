@@ -68,7 +68,6 @@ class SongRepository(private val symphony: Symphony) {
                 val regex = symphony.settings.getSongsFilterPattern()
                     ?.let { literal -> Regex(literal, RegexOption.IGNORE_CASE) }
 
-                //TODO I think that we are fetching the cached songs from here
                 val additionalMetadataCache = kotlin
                     .runCatching { symphony.database.songCache.read() }
                     .getOrNull()
