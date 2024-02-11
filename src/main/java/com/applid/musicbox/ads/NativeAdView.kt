@@ -1,3 +1,5 @@
+package com.applid.musicbox.ads
+
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
@@ -9,6 +11,7 @@ import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.core.view.isVisible
 import com.applid.musicbox.databinding.NativeAdViewBinding
 import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.nativead.NativeAdOptions
 
@@ -23,7 +26,7 @@ fun NativeAdView(adUnitId: String) {
                     adView.iconView = binding.adAppIcon
                 }
                 try {
-                    AdLoader.Builder(
+                    val adLoader = AdLoader.Builder(
                         adView.context,
                         adUnitId,
                     )
@@ -51,6 +54,8 @@ fun NativeAdView(adUnitId: String) {
                         )
                         .withNativeAdOptions(NativeAdOptions.Builder().build())
                         .build()
+
+                    adLoader.loadAd(AdRequest.Builder().build())
                 } catch (e: Exception) {
                     Log.e("Exception", e.message.toString())
                 }
