@@ -17,7 +17,7 @@ import com.google.android.gms.ads.nativead.NativeAdOptions
 
 @Composable
 fun NativeAdView(adUnitId: String) {
-    Box(modifier = Modifier.defaultMinSize(minHeight = 200.dp)) {
+    Box {
         AndroidViewBinding(
             factory = { inflater, parent, attachToParent ->
                 val binding = NativeAdViewBinding.inflate(inflater, parent, attachToParent)
@@ -41,7 +41,6 @@ fun NativeAdView(adUnitId: String) {
                                     binding.adHeadline.isVisible = true
                                 }
                             }
-
                             adView.setNativeAd(nativeAd)
                         }
                         .withAdListener(
