@@ -18,6 +18,6 @@ fun isValidAudioUrl(url: String): Boolean {
     )
     return pattern.matches(url)
 }
-fun isYoutubeUrl(url: String): Boolean {
+fun isYouTubeUrl(url: String): Boolean {
     return url.contains("youtube.com") || url.contains("youtu.be")
 }

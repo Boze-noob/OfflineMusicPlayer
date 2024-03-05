@@ -1,6 +1,5 @@
 package com.applid.musicbox.ui.components
 
-
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -26,7 +25,7 @@ import com.applid.musicbox.ads.DOWNLOAD_SONG_BANNER_AD_UNIT
 import com.applid.musicbox.data.api.SongsApi
 import com.applid.musicbox.services.downloaders.AudioDownloader
 import isValidAudioUrl
-import isYoutubeUrl
+import isYouTubeUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -48,40 +47,33 @@ fun DownloadSongForm (
     fun download() {
         coroutineScope.launch {
             try {
-                if (!isYoutubeUrl(enteredUrl.text)) {
+                if (!isYouTubeUrl(enteredUrl.text)) {
                     val audioDownloader = AudioDownloader()
 
                     audioDownloader.downloadAndTrackProgress(enteredUrl.text) { progress ->
                         downloadProgress = progress
-                        if(progress == 100)  showSuccessfulDownloadToast(localContext, audioDownloadedSuccessfullyTxt )
+                        if(progress == 100)  showToast(localContext, audioDownloadedSuccessfullyTxt )
                     }
                 } else {
                     val songsApi = SongsApi()
-                    songsApi.fetchYtAudioData(localContext, enteredUrl.text, {
+                    songsApi.fetchYouTubeAudioData(localContext, enteredUrl.text, {
                             isSuccessful -> GlobalScope.launch(Dispatchers.Main) {
                         if (isSuccessful) {
-                            showSuccessfulDownloadToast(localContext, audioDownloadedSuccessfullyTxt )
+                            showToast(localContext, audioDownloadedSuccessfullyTxt )
                             // TODO: add song to the list of songs
-                        } else {
-                            Toast.makeText(localContext, viewContext.symphony.t.downloadFailedTryAgain, Toast.LENGTH_SHORT).show()
-                        }
+                        } else showToast(localContext, viewContext.symphony.t.downloadFailedTryAgain, Toast.LENGTH_SHORT)                        
                     }
-                    }, {
-                        progress -> downloadProgress = progress
-
-                    })
+                    }, {progress -> downloadProgress = progress})
                 }
             } catch (e: Exception) {
                 Log.e("DownloadSongException", e.message ?: "Unknown Error!")
-                GlobalScope.launch(Dispatchers.Main) {
-                    Toast.makeText(localContext, viewContext.symphony.t.unexpectedErrorHappenPleaseTryAgain, Toast.LENGTH_LONG).show()
-                }
+                showToast(localContext, viewContext.symphony.t.unexpectedErrorHappenPleaseTryAgain, Toast.LENGTH_LONG)
             }
         }
     }
 
      fun handleOnDownloadClick() {
-        if (!isValidAudioUrl(enteredUrl.text) && !isYoutubeUrl(enteredUrl.text)) showUrlValidationError = true
+        if (!isValidAudioUrl(enteredUrl.text) && !isYouTubeUrl(enteredUrl.text)) showUrlValidationError = true
         else {
             if (showUrlValidationError) showUrlValidationError = false
             download()
@@ -202,7 +194,7 @@ fun DownloadSongForm (
         }
     )
 }
-
-private fun showSuccessfulDownloadToast(context: Context, message: String) {
+//TODO check this
+private fun showToast(context: Context, message: String, length: Toast.length) {
     Toast.makeText(context, "${message}!", Toast.LENGTH_SHORT).show()
 }

@@ -19,7 +19,7 @@ val BASE_URL = BuildConfig.BASE_URL
 val SECRET_KEY = BuildConfig.CLIENT_SECRET_KEY
 
 class SongsApi {
-    fun fetchYtAudioData(context: Context, youtubeUrl: String, isSuccessfulCallback: (Boolean) -> Unit,  progressCallback: (Int) -> Unit) {
+    fun fetchYouTubeAudioData(context: Context, youtubeUrl: String, isSuccessfulCallback: (Boolean) -> Unit,  progressCallback: (Int) -> Unit) {
         val httpClient = HttpClient.create(context)
         val url = "$BASE_URL/${Endpoints.DOWNLOAD_YT_AUDIO_ENDPOINT}"
 
