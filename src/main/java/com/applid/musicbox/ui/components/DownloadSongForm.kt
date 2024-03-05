@@ -44,19 +44,19 @@ fun DownloadSongForm (
 
     val audioDownloadedSuccessfullyTxt =  viewContext.symphony.t.audioDownloadedSuccessfully
 
-    fun download() {
+    fun download(url: String, isYouTubeUrl: Boolean) {
         coroutineScope.launch {
             try {
-                if (!isYouTubeUrl(enteredUrl.text)) {
+                if (!isYouTubeUrl) {
                     val audioDownloader = AudioDownloader()
 
-                    audioDownloader.downloadAndTrackProgress(enteredUrl.text) { progress ->
+                    audioDownloader.downloadAndTrackProgress(url) { progress ->
                         downloadProgress = progress
                         if(progress == 100)  showToast(localContext, audioDownloadedSuccessfullyTxt )
                     }
                 } else {
                     val songsApi = SongsApi()
-                    songsApi.fetchYouTubeAudioData(localContext, enteredUrl.text, {
+                    songsApi.fetchYouTubeAudioData(localContext, url, {
                             isSuccessful -> GlobalScope.launch(Dispatchers.Main) {
                         if (isSuccessful) {
                             showToast(localContext, audioDownloadedSuccessfullyTxt )
@@ -73,10 +73,13 @@ fun DownloadSongForm (
     }
 
      fun handleOnDownloadClick() {
-        if (!isValidAudioUrl(enteredUrl.text) && !isYouTubeUrl(enteredUrl.text)) showUrlValidationError = true
+        val url = enteredUrl.text.trim();
+        val isYouTubeUrl = isYouTubeUrl(url)
+
+        if (!isValidAudioUrl(url) && !isYouTubeUrl) showUrlValidationError = true
         else {
             if (showUrlValidationError) showUrlValidationError = false
-            download()
+            download(url, isYouTubeUrl)
         }
     }
 
