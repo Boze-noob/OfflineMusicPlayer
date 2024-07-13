@@ -52,14 +52,14 @@ fun DownloadSongForm (
 
                     audioDownloader.downloadAndTrackProgress(url) { progress ->
                         downloadProgress = progress
-                        if(progress == 100)  showToast(localContext, audioDownloadedSuccessfullyTxt )
+                        if(progress == 100)  showToast(localContext, audioDownloadedSuccessfullyTxt, Toast.LENGTH_LONG )
                     }
                 } else {
                     val songsApi = SongsApi()
                     songsApi.fetchYouTubeAudioData(localContext, url, {
                             isSuccessful -> GlobalScope.launch(Dispatchers.Main) {
                         if (isSuccessful) {
-                            showToast(localContext, audioDownloadedSuccessfullyTxt )
+                            showToast(localContext, audioDownloadedSuccessfullyTxt, Toast.LENGTH_LONG )
                             // TODO: add song to the list of songs
                         } else showToast(localContext, viewContext.symphony.t.downloadFailedTryAgain, Toast.LENGTH_SHORT)                        
                     }
@@ -73,7 +73,7 @@ fun DownloadSongForm (
     }
 
      fun handleOnDownloadClick() {
-        val url = enteredUrl.text.trim();
+        val url = enteredUrl.text.trim()
         val isYouTubeUrl = isYouTubeUrl(url)
 
         if (!isValidAudioUrl(url) && !isYouTubeUrl) showUrlValidationError = true
@@ -197,7 +197,6 @@ fun DownloadSongForm (
         }
     )
 }
-//TODO check this
-private fun showToast(context: Context, message: String, length: Toast.length) {
-    Toast.makeText(context, "${message}!", Toast.LENGTH_SHORT).show()
+private fun showToast(context: Context, message: String, length: Int) {
+    Toast.makeText(context, "${message}!", length).show()
 }

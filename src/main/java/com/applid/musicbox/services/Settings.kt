@@ -106,7 +106,7 @@ object SettingsDataDefaults {
         HomePages.Songs,
         HomePages.Albums,
         HomePages.Artists,
-        HomePages.Download
+        //HomePages.Download
     )
     val homePageBottomBarLabelVisibility = HomePageBottomBarLabelVisibility.ALWAYS_VISIBLE
     val blacklistFolders = setOf<String>()

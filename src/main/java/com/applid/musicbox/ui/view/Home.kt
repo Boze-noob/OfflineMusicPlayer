@@ -82,11 +82,14 @@ enum class HomePages(
         selectedIcon = { Icons.Filled.AccountTree },
         unselectedIcon = { Icons.Outlined.AccountTree }
     ),
+    /*
     Download(
         label = { it.symphony.t.download },
         selectedIcon = { Icons.Filled.Download },
         unselectedIcon = { Icons.Outlined.Download }
     )
+    */
+
 }
 
 enum class HomePageBottomBarLabelVisibility {
@@ -215,7 +218,7 @@ fun HomeView(context: ViewContext) {
                     HomePages.Folders -> FoldersView(context, data)
                     HomePages.Playlists -> PlaylistsView(context, data)
                     HomePages.Tree -> TreeView(context, data)
-                    HomePages.Download -> DownloadView(context)
+                    //HomePages.Download -> DownloadView(context)
                 }
             }
         },

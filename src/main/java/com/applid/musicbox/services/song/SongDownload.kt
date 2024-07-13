@@ -1,4 +1,5 @@
 //TODO check this
+/*
 class SongDownload {   
     suspend fun download(url: String, progressListener: (Int) -> Unit) {
             try {
@@ -29,3 +30,4 @@ class SongDownload {
 private fun showToast(context: Context, message: String, length: Toast.length) {
     Toast.makeText(context, "${message}!", Toast.LENGTH_SHORT).show()
 }
+ */

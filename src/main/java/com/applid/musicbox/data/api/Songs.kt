@@ -15,8 +15,8 @@ object Endpoints {
     // Add more endpoints as needed
 }
 
-val BASE_URL = BuildConfig.BASE_URL
-val SECRET_KEY = BuildConfig.CLIENT_SECRET_KEY
+const val BASE_URL = BuildConfig.BASE_URL
+const val SECRET_KEY = BuildConfig.CLIENT_SECRET_KEY
 
 class SongsApi {
     fun fetchYouTubeAudioData(context: Context, youtubeUrl: String, isSuccessfulCallback: (Boolean) -> Unit,  progressCallback: (Int) -> Unit) {
@@ -39,7 +39,7 @@ class SongsApi {
 
         httpClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                Log.e("IOException", e.message ?: "IOException")
+                Log.e("IOException", (e.message + " url ->" + url))
                 isSuccessfulCallback(false)
             }
 

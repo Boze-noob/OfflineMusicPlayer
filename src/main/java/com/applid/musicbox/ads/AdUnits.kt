@@ -3,3 +3,10 @@ package com.applid.musicbox.ads
 const val HOME_INTERSTITIAL_AD_UNIT = "ca-app-pub-2281074336539826/9859260993"
 const val EQUALIZER_INTERSTITIAL_AD_UNIT = "ca-app-pub-2281074336539826/8350720938"
 const val LIST_OF_SONGS_NATIVE_AD_UNIT = "ca-app-pub-2281074336539826/5083329695"
+const val LIST_OF_SONGS_BANNER_AD_UNIT = "ca-app-pub-2281074336539826/6506315904"
+const val DOWNLOAD_SONG_BANNER_AD_UNIT = "ca-app-pub-3940256099942544/6300978111"
+
+//Test interstitial = "ca-app-pub-3940256099942544/1033173712"
+//Test native = "ca-app-pub-3940256099942544/2247696110"
+//Test native 2 = "/6499/example/native"
+//Test banner = "ca-app-pub-3940256099942544/6300978111"
